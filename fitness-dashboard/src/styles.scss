@@ -7,4 +7,12 @@ $theme-colors: (
   "light": #FFFFFF
 );
 
+* {
+  font-size: 1.2rem;
+}
+
+.mat-form-field {
+  width: 100%
+}
+
 @import "node_modules/bootstrap/scss/bootstrap";
