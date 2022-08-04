@@ -14,6 +14,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
   public mainFormGroup = this.fb.group({
     startDate: [null],
+    endDate: [null],
+    startWeight: [null],
+    endWeight: [null],
   });
 
   constructor(

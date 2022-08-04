@@ -1,7 +1,27 @@
-<div class="m-3">
+<div class="container-fluid">
   <h2>Set Goals</h2>
-  <app-date
-    label="Start Date"
-    [inputControl]="mainFormGroup | getControl: 'startDate'">
-  </app-date>
+  <div class="row">
+    <app-date
+      class="col-4"
+      label="Start Date"
+      [inputControl]="mainFormGroup | getControl: 'startDate'">
+    </app-date>
+    <app-date
+      class="col-4 ms-auto"
+      label="End Date"
+      [inputControl]="mainFormGroup | getControl: 'endDate'">
+    </app-date>
+  </div>
+  <div class="row">
+    <app-number
+      class="col-4"
+      label="Start Weight"
+      [inputControl]="mainFormGroup | getControl: 'startWeight'">
+    </app-number>
+    <app-number
+      class="col-4 ms-auto"
+      label="Goal Weight"
+      [inputControl]="mainFormGroup | getControl: 'endWeight'">
+    </app-number>
+  </div>
 </div>
