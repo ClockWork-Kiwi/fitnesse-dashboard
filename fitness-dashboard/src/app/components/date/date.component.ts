@@ -8,6 +8,7 @@ import {Component, Input, OnChanges, OnInit, ViewChild} from '@angular/core';
 export class DateComponent implements OnInit, OnChanges {
 
   @Input() inputControl;
+  @Input() label;
 
   @ViewChild('dateField',  { static: false }) dateField;
 

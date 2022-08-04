@@ -1,1 +1,7 @@
-<app-date [inputControl]="mainFormGroup | getControl: 'startDate'"></app-date>
+<div class="m-3">
+  <h2>Set Goals</h2>
+  <app-date
+    label="Start Date"
+    [inputControl]="mainFormGroup | getControl: 'startDate'">
+  </app-date>
+</div>
