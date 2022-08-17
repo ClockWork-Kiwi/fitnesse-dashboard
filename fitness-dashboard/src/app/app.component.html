@@ -2,6 +2,10 @@
   <h1 class="mb-0">Fitnesse</h1>
 </div>
 <mat-drawer-container class="app-container bg-primary">
-  <mat-drawer class="col-3 bg-light side-bar" mode="side" opened>Navigation Buttons</mat-drawer>
-  <mat-drawer-content class="col-8 drawer-content"><router-outlet></router-outlet></mat-drawer-content>
+  <mat-drawer class="col-2 bg-light side-bar" mode="side" opened>Navigation Buttons</mat-drawer>
+  <mat-drawer-content class="col-9">
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-content>
 </mat-drawer-container>

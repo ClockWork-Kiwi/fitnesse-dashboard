@@ -1,7 +1,62 @@
-<div class="m-3">
-  <h2>Set Goals</h2>
-  <app-date
-    label="Start Date"
-    [inputControl]="mainFormGroup | getControl: 'startDate'">
-  </app-date>
+<!--  <h2>Set Goals</h2>-->
+<!--  <div class="row">-->
+<!--    <app-date-->
+<!--      class="col-4"-->
+<!--      label="Start Date"-->
+<!--      [inputControl]="mainFormGroup | getControl: 'startDate'">-->
+<!--    </app-date>-->
+<!--    <app-date-->
+<!--      class="col-4 ms-auto"-->
+<!--      label="End Date"-->
+<!--      [inputControl]="mainFormGroup | getControl: 'endDate'">-->
+<!--    </app-date>-->
+<!--  </div>-->
+<!--  <div class="row">-->
+<!--    <app-number-->
+<!--      class="col-4"-->
+<!--      label="Start Weight"-->
+<!--      [inputControl]="mainFormGroup | getControl: 'startWeight'">-->
+<!--    </app-number>-->
+<!--    <app-number-->
+<!--      class="col-4 ms-auto"-->
+<!--      label="Goal Weight"-->
+<!--      [inputControl]="mainFormGroup | getControl: 'endWeight'">-->
+<!--    </app-number>-->
+<!--  </div>-->
+<h2>About Me</h2>
+<div class="row">
+  <app-select
+    label="Sex"
+    class="col-2"
+    [options]="sexOptions"
+    [inputControl]="mainFormGroup | getControl: 'sex'">
+  </app-select>
+  <app-number
+    label="Age"
+    class="col-2"
+    [inputControl]="mainFormGroup | getControl: 'age'">
+  </app-number>
+  <app-number
+    label="Height"
+    class="col-2"
+    [inputControl]="mainFormGroup | getControl: 'height'">
+  </app-number>
+  <app-number
+    label="Weight"
+    class="col-2"
+    [inputControl]="mainFormGroup | getControl: 'weight'">
+  </app-number>
+</div>
+<div class="row">
+  <app-select
+    label="Activity Level"
+    class="col-2"
+    [options]="activityLevelOptions"
+    [inputControl]="mainFormGroup | getControl: 'activityLevel'">
+  </app-select>
+</div>
+<div class="row">
+  <button class="col-2" (click)="calculateCalories()">
+    Calculate Calories!
+  </button>
 </div>

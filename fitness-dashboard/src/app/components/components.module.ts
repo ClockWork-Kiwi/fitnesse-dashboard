@@ -6,10 +6,17 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatInputModule} from "@angular/material/input";
 import {MatNativeDateModule} from "@angular/material/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { NumberComponent } from './number/number.component';
+import { TextComponent } from './text/text.component';
+import { SelectComponent } from './select/select.component';
+import {MatSelectModule} from '@angular/material';
 
 @NgModule({
   declarations: [
-    DateComponent
+    DateComponent,
+    NumberComponent,
+    TextComponent,
+    SelectComponent
   ],
   imports: [
     BrowserModule,
@@ -19,9 +26,13 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     MatNativeDateModule,
     FormsModule,
     ReactiveFormsModule,
+    MatSelectModule,
   ],
   exports: [
-    DateComponent
+    DateComponent,
+    NumberComponent,
+    TextComponent,
+    SelectComponent,
   ],
   providers: [],
   bootstrap: []
