@@ -14,12 +14,16 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {PipesModule} from './pipes/pipes.module';
 import {MatSidenavModule} from '@angular/material';
+import { NutritionComponent } from './pages/nutrition/nutrition.component';
+import { ExerciseComponent } from './pages/exercise/exercise.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     GoalsComponent,
+    NutritionComponent,
+    ExerciseComponent,
   ],
   imports: [
     BrowserModule,
