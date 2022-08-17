@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-date',
+  selector: 'field-date',
   templateUrl: './date.component.html',
   styleUrls: ['./date.component.scss']
 })

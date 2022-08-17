@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-number',
+  selector: 'field-number',
   templateUrl: './number.component.html',
   styleUrls: ['./number.component.scss']
 })

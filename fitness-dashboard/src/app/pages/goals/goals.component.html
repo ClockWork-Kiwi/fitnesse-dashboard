@@ -12,48 +12,48 @@
 <!--    </app-date>-->
 <!--  </div>-->
 <!--  <div class="row">-->
-<!--    <app-number-->
+<!--    <field-number-->
 <!--      class="col-4"-->
 <!--      label="Start Weight"-->
 <!--      [inputControl]="mainFormGroup | getControl: 'startWeight'">-->
-<!--    </app-number>-->
-<!--    <app-number-->
+<!--    </field-number>-->
+<!--    <field-number-->
 <!--      class="col-4 ms-auto"-->
 <!--      label="Goal Weight"-->
 <!--      [inputControl]="mainFormGroup | getControl: 'endWeight'">-->
-<!--    </app-number>-->
+<!--    </field-number>-->
 <!--  </div>-->
 <h2>About Me</h2>
 <div class="row">
-  <app-select
+  <field-select
     label="Sex"
     class="col-2"
     [options]="sexOptions"
     [inputControl]="mainFormGroup | getControl: 'sex'">
-  </app-select>
-  <app-number
+  </field-select>
+  <field-number
     label="Age"
     class="col-2"
     [inputControl]="mainFormGroup | getControl: 'age'">
-  </app-number>
-  <app-number
+  </field-number>
+  <field-number
     label="Height"
     class="col-2"
     [inputControl]="mainFormGroup | getControl: 'height'">
-  </app-number>
-  <app-number
+  </field-number>
+  <field-number
     label="Weight"
     class="col-2"
     [inputControl]="mainFormGroup | getControl: 'weight'">
-  </app-number>
+  </field-number>
 </div>
 <div class="row">
-  <app-select
+  <field-select
     label="Activity Level"
     class="col-2"
     [options]="activityLevelOptions"
     [inputControl]="mainFormGroup | getControl: 'activityLevel'">
-  </app-select>
+  </field-select>
 </div>
 <div class="row">
   <button class="col-2" (click)="calculateCalories()">
