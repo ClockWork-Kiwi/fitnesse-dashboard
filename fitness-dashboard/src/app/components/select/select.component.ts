@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: 'field-select',
@@ -7,7 +8,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class SelectComponent implements OnInit {
 
-  @Input() inputControl;
+  @Input() inputControl = new FormControl();
   @Input() label;
   @Input() options;
 
