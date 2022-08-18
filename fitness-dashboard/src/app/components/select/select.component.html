@@ -5,4 +5,5 @@
       {{!!option.label ? option.label : option.value}}
     </mat-option>
   </mat-select>
+  <mat-hint *ngIf="!!hint">{{hint}}</mat-hint>
 </mat-form-field>

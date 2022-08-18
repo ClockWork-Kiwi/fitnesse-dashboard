@@ -10,6 +10,7 @@ export class SelectComponent implements OnInit {
 
   @Input() inputControl = new FormControl();
   @Input() label;
+  @Input() hint;
   @Input() options;
 
   constructor() { }
