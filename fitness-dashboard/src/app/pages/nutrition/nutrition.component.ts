@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-nutrition',
@@ -7,7 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NutritionComponent implements OnInit {
 
-  constructor() { }
+  public addIcon = faPlusCircle;
+
+  constructor(
+  ) { }
 
   ngOnInit() {
   }
