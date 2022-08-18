@@ -16,6 +16,7 @@ import {PipesModule} from './pipes/pipes.module';
 import {MatSidenavModule} from '@angular/material';
 import { NutritionComponent } from './pages/nutrition/nutrition.component';
 import { ExerciseComponent } from './pages/exercise/exercise.component';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ExerciseComponent } from './pages/exercise/exercise.component';
     FormsModule,
     ReactiveFormsModule,
     MatSidenavModule,
+    FontAwesomeModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
