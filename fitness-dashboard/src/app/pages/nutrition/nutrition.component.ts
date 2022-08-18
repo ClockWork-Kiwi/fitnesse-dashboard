@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-nutrition',
@@ -9,6 +9,7 @@ import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 export class NutritionComponent implements OnInit {
 
   public addIcon = faPlusCircle;
+  public removeIcon = faMinusCircle;
 
   constructor(
   ) { }

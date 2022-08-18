@@ -1,5 +1,20 @@
 <h2>Today I had...</h2>
 <div class="col-8">
+  <div class="row mt-2">
+    <strong class="col-4">Ham Sandwich</strong>
+    <strong class="col-4">250</strong>
+    <fa-icon class="col-2" [icon]="removeIcon"></fa-icon>
+  </div>
+  <div class="row mt-2">
+    <strong class="col-4">Black Coffee</strong>
+    <strong class="col-4">50</strong>
+    <fa-icon class="col-2" [icon]="removeIcon"></fa-icon>
+  </div>
+  <div class="row mt-2">
+    <strong class="col-4">Teriyaki Chicken Sushi</strong>
+    <strong class="col-4">600</strong>
+    <fa-icon class="col-2" [icon]="removeIcon"></fa-icon>
+  </div>
   <div class="row">
     <field-text
       class="col-4"
@@ -9,6 +24,18 @@
       class="col-4"
       label="Calories">
     </field-number>
-    <button><fa-icon [icon]="addIcon"></fa-icon></button>
+    <fa-icon class="col-2 pt-4" [icon]="addIcon"></fa-icon>
+  </div>
+  <div class="row mt-2">
+    <div class="col-4"></div>
+    <div class="col-4">
+      <strong>900 Calories Consumed</strong>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-4"></div>
+    <div class="col-4">
+      <strong class="text-info">1000 Left for today!</strong>
+    </div>
   </div>
 </div>
