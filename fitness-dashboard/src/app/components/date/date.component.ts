@@ -9,6 +9,7 @@ import {FormControl} from '@angular/forms';
 export class DateComponent implements OnInit {
 
   @Input() inputControl = new FormControl();
+  @Input() hint;
   @Input() label;
 
   constructor(

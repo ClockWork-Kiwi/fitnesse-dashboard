@@ -4,4 +4,5 @@
 <!--  <mat-hint>MM/DD/YYYY</mat-hint>-->
   <mat-datepicker-toggle class="date-toggle" matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
+  <mat-hint *ngIf="!!hint">{{hint}}</mat-hint>
 </mat-form-field>
