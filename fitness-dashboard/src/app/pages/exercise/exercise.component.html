@@ -1,1 +1,30 @@
-<p>exercise works!</p>
+<h2>Today's Exercise...</h2>
+<div class="col-8">
+  <div class="row mt-2">
+    <strong class="col-3">Run</strong>
+    <strong class="col-3">30 Minutes</strong>
+    <strong class="col-3">250</strong>
+    <fa-icon class="col-2" [icon]="removeIcon"></fa-icon>
+  </div>
+  <div class="row">
+    <field-select
+      class="col-3"
+      label="Exercise">
+    </field-select>
+    <field-number
+      class="col-3"
+      label="Duration">
+    </field-number>
+    <field-number
+      class="col-3"
+      label="Calories">
+    </field-number>
+    <fa-icon class="col-2 pt-4" [icon]="addIcon"></fa-icon>
+  </div>
+  <div class="row mt-2">
+    <div class="col-6"></div>
+    <div class="col-4 text-info">
+      <strong>+250 Calories Added!</strong>
+    </div>
+  </div>
+</div>

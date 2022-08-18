@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-exercise',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./exercise.component.scss']
 })
 export class ExerciseComponent implements OnInit {
+
+  public addIcon = faPlusCircle;
+  public removeIcon = faMinusCircle;
 
   constructor() { }
 
