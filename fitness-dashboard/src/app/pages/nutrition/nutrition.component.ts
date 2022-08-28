@@ -59,6 +59,7 @@ export class NutritionComponent implements OnInit, OnDestroy {
       takeUntil(this.componentDestruction$)
     ).subscribe(() => {
       this.caloriesAllowedToday = this.totalCaloriesAllowed;
+      this.caloriesConsumedToday = 0;
       for (const foodItem of this.foodItems) {
         this.caloriesAllowedToday -= foodItem.calories;
         this.caloriesConsumedToday += foodItem.calories;
