@@ -17,9 +17,7 @@ export class NutritionComponent implements OnInit, OnDestroy {
   private caloriesChanged$ = new Subject();
   private componentDestruction$ = new Subject();
 
-  public foodItems = [
-    {foodName: 'Ham Sandwich', calories: 250}
-  ];
+  public foodItems = [];
   // Mocked up number- to be retrieved from database in future
   public totalCaloriesAllowed = 2200;
   public caloriesAllowedToday = 2200;
