@@ -13,17 +13,19 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
   private componentDestruction$ = new Subject();
 
+  public caloriesAllowed;
+
   public sexOptions = [
     {value: 'male', label: 'Male'},
     {value: 'female', label: 'Female'},
   ];
 
-  public activityLevelOptions = [
-    { value: 'sedentary', label: 'Sedentary' },
-    { value: 'light', label: 'Light' },
-    { value: 'moderate', label: 'Moderate' },
-    { value: 'active', label: 'Active' },
-    { value: 'extreme', label: 'Extreme' },
+  public weightGoalOptions = [
+    { value: 'balance', label: 'Maintain Current Weight' },
+    { value: 'mildWeightLoss', label: 'Slow Weight Loss' },
+    { value: 'heavyWeightLoss', label: 'Fast Weight Loss' },
+    { value: 'mildWeightGain', label: 'Slow Weight Gain' },
+    { value: 'heavyWeightGain', label: 'Fast Weight Gain' },
   ];
 
   public mainFormGroup = this.fb.group({
@@ -31,7 +33,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
     age: [null, Validators.required],
     height: [null, Validators.required],
     weight: [null, Validators.required],
-    activityLevel: [null, Validators.required],
+    weightGoal: [null, Validators.required],
+    // activityLevel: [null, Validators.required],
     // startDate: [null],
     // endDate: [null],
     // startWeight: [null],
@@ -45,16 +48,14 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
   public calculateCalories() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
-
-    console.log(
-      this.fitnessCalculatorService.calculateCalories(
-        this.mainFormGroup.get('sex').value,
-        this.mainFormGroup.get('age').value,
-        this.mainFormGroup.get('height').value,
-        this.mainFormGroup.get('weight').value,
-        this.mainFormGroup.get('activityLevel').value,
-      )
+    const calculatedCalories = this.fitnessCalculatorService.calculateCalories(
+      this.mainFormGroup.get('sex').value,
+      this.mainFormGroup.get('age').value,
+      this.mainFormGroup.get('height').value,
+      this.mainFormGroup.get('weight').value,
+      'sedentary',
     );
+    this.caloriesAllowed = Math.round(calculatedCalories[this.mainFormGroup.get('weightGoal').value] / 100) * 100;
   }
 
   ngOnInit() {

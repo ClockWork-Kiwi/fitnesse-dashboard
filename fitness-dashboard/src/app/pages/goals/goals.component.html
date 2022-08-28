@@ -38,25 +38,30 @@
   </field-number>
   <field-number
     label="Height"
+    hint="Centimeters"
     class="col-2"
     [inputControl]="mainFormGroup | getControl: 'height'">
   </field-number>
   <field-number
     label="Weight"
+    hint="Kilograms"
     class="col-2"
     [inputControl]="mainFormGroup | getControl: 'weight'">
   </field-number>
 </div>
 <div class="row">
   <field-select
-    label="Activity Level"
+    label="Weight Goal"
     class="col-2"
-    [options]="activityLevelOptions"
-    [inputControl]="mainFormGroup | getControl: 'activityLevel'">
+    [options]="weightGoalOptions"
+    [inputControl]="mainFormGroup | getControl: 'weightGoal'">
   </field-select>
 </div>
 <div class="row">
   <button class="col-2" (click)="calculateCalories()">
     Calculate Calories!
   </button>
+</div>
+<div class="row mt-5" *ngIf="!!caloriesAllowed">
+  <h2>Your Daily Caloric Allowance: {{caloriesAllowed}}</h2>
 </div>
