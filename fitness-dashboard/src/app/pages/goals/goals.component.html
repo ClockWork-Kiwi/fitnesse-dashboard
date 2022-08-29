@@ -1,30 +1,5 @@
-<!--  <h2>Set Goals</h2>-->
-<!--  <div class="row">-->
-<!--    <app-date-->
-<!--      class="col-4"-->
-<!--      label="Start Date"-->
-<!--      [inputControl]="mainFormGroup | getControl: 'startDate'">-->
-<!--    </app-date>-->
-<!--    <app-date-->
-<!--      class="col-4 ms-auto"-->
-<!--      label="End Date"-->
-<!--      [inputControl]="mainFormGroup | getControl: 'endDate'">-->
-<!--    </app-date>-->
-<!--  </div>-->
-<!--  <div class="row">-->
-<!--    <field-number-->
-<!--      class="col-4"-->
-<!--      label="Start Weight"-->
-<!--      [inputControl]="mainFormGroup | getControl: 'startWeight'">-->
-<!--    </field-number>-->
-<!--    <field-number-->
-<!--      class="col-4 ms-auto"-->
-<!--      label="Goal Weight"-->
-<!--      [inputControl]="mainFormGroup | getControl: 'endWeight'">-->
-<!--    </field-number>-->
-<!--  </div>-->
-<h2>About Me</h2>
 <div class="row">
+  <h2>About Me</h2>
   <field-select
     label="Sex"
     class="col-2"
@@ -50,11 +25,18 @@
   </field-number>
 </div>
 <div class="row">
+  <h2>My Goals</h2>
   <field-select
     label="Weight Goal"
     class="col-2"
     [options]="weightGoalOptions"
     [inputControl]="mainFormGroup | getControl: 'weightGoal'">
+  </field-select>
+  <field-select
+    label="Diet Plan"
+    class="col-2"
+    [options]="dietPlanOptions"
+    [inputControl]="mainFormGroup | getControl: 'dietPlan'">
   </field-select>
 </div>
 <div class="row">

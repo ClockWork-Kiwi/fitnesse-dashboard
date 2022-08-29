@@ -21,12 +21,36 @@ export class GoalsComponent implements OnInit, OnDestroy {
   ];
 
   public weightGoalOptions = [
-    { value: 'balance', label: 'Maintain Current Weight' },
-    { value: 'mildWeightLoss', label: 'Slow Weight Loss' },
-    { value: 'heavyWeightLoss', label: 'Fast Weight Loss' },
-    { value: 'mildWeightGain', label: 'Slow Weight Gain' },
-    { value: 'heavyWeightGain', label: 'Fast Weight Gain' },
+    { value: 0, label: 'Maintain Current Weight' },
+    { value: 1, label: 'Slow Weight Loss' },
+    { value: 2, label: 'Fast Weight Loss' },
+    { value: 3, label: 'Slow Weight Gain' },
+    { value: 4, label: 'Fast Weight Gain' },
   ];
+
+  private weightGoalMap = {
+    0: 'balance',
+    1: 'mildWeightLoss',
+    2: 'heavyWeightLoss',
+    3: 'mildWeightGain',
+    4: 'heavyWeightGain',
+  };
+
+  public dietPlanOptions = [
+    { value: 0, label: 'Balanced' },
+    { value: 1, label: 'Low Carb' },
+    { value: 2, label: 'High Carb' },
+    { value: 3, label: 'High Protein' },
+    { value: 4, label: 'Low Fat' },
+  ];
+
+  private dietPlanMap = {
+    0: 'balancedDietPlan ',
+    1: 'lowCarbDietPlan ',
+    2: 'highCarbDietPlan ',
+    3: 'highProteinDietPlan ',
+    4: 'lowFatDietPlan ',
+  };
 
   public mainFormGroup = this.fb.group({
     sex: [null, Validators.required],
@@ -34,11 +58,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     height: [null, Validators.required],
     weight: [null, Validators.required],
     weightGoal: [null, Validators.required],
-    // activityLevel: [null, Validators.required],
-    // startDate: [null],
-    // endDate: [null],
-    // startWeight: [null],
-    // endWeight: [null],
+    dietPlan: [null],
   });
 
   constructor(
@@ -55,7 +75,8 @@ export class GoalsComponent implements OnInit, OnDestroy {
       this.mainFormGroup.get('weight').value,
       'sedentary',
     );
-    this.caloriesAllowed = Math.round(calculatedCalories[this.mainFormGroup.get('weightGoal').value] / 100) * 100;
+    const goalString = this.weightGoalMap[this.mainFormGroup.get('weightGoal').value];
+    this.caloriesAllowed = Math.round(calculatedCalories[goalString] / 10) * 10;
   }
 
   ngOnInit() {
