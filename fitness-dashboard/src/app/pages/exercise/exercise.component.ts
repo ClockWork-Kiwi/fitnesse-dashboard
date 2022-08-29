@@ -215,7 +215,7 @@ export class ExerciseComponent implements OnInit, OnDestroy {
 
   public mainFormGroup = this.fb.group({
     exercise: [null, Validators.required],
-    duration: [null, Validators.required],
+    duration: [null],
     calories: [null, Validators.required],
   });
 
