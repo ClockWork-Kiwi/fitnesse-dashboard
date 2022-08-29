@@ -14,14 +14,14 @@ export class NutritionComponent implements OnInit, OnDestroy {
   public addIcon = faPlusCircle;
   public removeIcon = faMinusCircle;
 
-  private caloriesChanged$ = new Subject();
-  private componentDestruction$ = new Subject();
-
   public foodItems = [];
   // Mocked up number- to be retrieved from database in future
   public totalCaloriesAllowed = 2200;
   public caloriesAllowedToday = 2200;
   public caloriesConsumedToday = 0;
+
+  private caloriesChanged$ = new Subject();
+  private componentDestruction$ = new Subject();
 
   public mainFormGroup = this.fb.group({
     foodName: [null, Validators.required],
@@ -39,11 +39,7 @@ export class NutritionComponent implements OnInit, OnDestroy {
       calories: this.mainFormGroup.get('calories').value,
     });
     this.mainFormGroup.get('foodName').reset();
-    this.mainFormGroup.get('foodName').markAsPristine();
-    this.mainFormGroup.get('foodName').markAsUntouched();
     this.mainFormGroup.get('calories').reset();
-    this.mainFormGroup.get('calories').markAsPristine();
-    this.mainFormGroup.get('calories').markAsUntouched();
     this.caloriesChanged$.next();
   }
 
