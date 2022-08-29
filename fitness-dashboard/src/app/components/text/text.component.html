@@ -1,5 +1,14 @@
 <mat-form-field appearance="fill">
   <mat-label>{{!!label ? label : ''}}</mat-label>
-  <input matInput type="text" [formControl]="inputControl">
+  <input
+    matInput
+    type="text"
+    [formControl]="inputControl"
+    [matAutocomplete]="auto">
   <mat-hint *ngIf="!!hint">{{hint}}</mat-hint>
+  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+    <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option.value">
+      {{option.value}}
+    </mat-option>
+  </mat-autocomplete>
 </mat-form-field>
