@@ -1,31 +1,39 @@
-<h2>Today's Exercise...</h2>
-<div class="col-8">
-  <div class="row mt-2">
-    <strong class="col-3">Run</strong>
-    <strong class="col-3">30 Minutes</strong>
-    <strong class="col-3">250</strong>
-    <fa-icon class="col-2" [icon]="removeIcon"></fa-icon>
-  </div>
-  <div class="row">
-    <field-select
-      class="col-3"
-      label="Exercise">
-    </field-select>
-    <field-number
-      class="col-3"
-      hint="Minutes"
-      label="Duration">
-    </field-number>
-    <field-number
-      class="col-3"
-      label="Calories">
-    </field-number>
-    <fa-icon class="col-2 pt-4" [icon]="addIcon"></fa-icon>
-  </div>
-  <div class="row mt-2">
-    <div class="col-6"></div>
-    <div class="col-4 text-info">
-      <strong>+250 Calories Added!</strong>
+<div class="row">
+  <div class="col-8">
+    <h2>Today's Exercise...</h2>
+    <ng-container *ngIf="!!exerciseItems && exerciseItems.length > 0">
+      <div class="row mt-2" *ngFor="let exerciseItem of exerciseItems; let i = index">
+        <strong class="col-6">{{exerciseItem.exercise}}</strong>
+        <strong class="col-2">{{exerciseItem.duration}}</strong>
+        <strong class="col-2">{{exerciseItem.calories}}</strong>
+        <fa-icon class="col-2" [icon]="removeIcon" (click)="removeExerciseItem(i)"></fa-icon>
+      </div>
+    </ng-container>
+    <div class="row">
+      <field-text
+        class="col-6"
+        [options]="exerciseOptions"
+        label="Exercise"
+        [inputControl]="mainFormGroup | getControl: 'exercise'">
+      </field-text>
+      <field-number
+        class="col-2"
+        hint="Minutes"
+        label="Duration"
+        [inputControl]="mainFormGroup | getControl: 'duration'">
+      </field-number>
+      <field-number
+        class="col-2"
+        label="Calories"
+        [inputControl]="mainFormGroup | getControl: 'calories'">
+      </field-number>
+      <fa-icon class="col-2 pt-4" [icon]="addIcon" (click)="addExerciseItem()"></fa-icon>
+    </div>
+    <div class="row mt-2">
+      <div class="col-8"></div>
+      <div class="col-4 text-info">
+        <strong>{{caloriesBurnedToday > 0 ? '+' + caloriesBurnedToday : 'No'}} Extra Calories Burned Today</strong>
+      </div>
     </div>
   </div>
 </div>

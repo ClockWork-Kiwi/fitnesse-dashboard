@@ -1,16 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {FormBuilder, Validators} from '@angular/forms';
+import {combineLatest, Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-exercise',
   templateUrl: './exercise.component.html',
   styleUrls: ['./exercise.component.scss'],
 })
-export class ExerciseComponent implements OnInit {
+export class ExerciseComponent implements OnInit, OnDestroy {
 
   public addIcon = faPlusCircle;
   public removeIcon = faMinusCircle;
   public exerciseOptions = [];
+  // Hard coded value- it must be replaced by value from database later
+  private userWeight = 89;
 
   public exerciseData = [
     '"Cycling, mountain bike, bmx",1.75072971940299',
@@ -68,7 +73,7 @@ export class ExerciseComponent implements OnInit {
     '"Archery",0.721008179104478',
     '"Badminton",0.927494089552239',
     '"Basketball game, competitive",1.64782526567164',
-    '"Playing basketball, non game",1.23485344477612',,
+    '"Playing basketball, non game",1.23485344477612',
     '"Boxing, in ring",2.47106089552239',
     '"Boxing, punching bag",1.23485344477612',
     '"Boxing, sparring",1.85295717014925',
@@ -202,15 +207,82 @@ export class ExerciseComponent implements OnInit {
     '"Downhill snow skiing, racing",1.64782526567164',
   ];
 
+  public exerciseItems = [];
+  public caloriesBurnedToday = 0;
+
+  private caloriesChanged$ = new Subject();
+  private componentDestruction$ = new Subject();
+
+  public mainFormGroup = this.fb.group({
+    exercise: [null, Validators.required],
+    duration: [null, Validators.required],
+    calories: [null, Validators.required],
+  });
+
   constructor(
+    private fb: FormBuilder,
   ) { }
+
+  public addExerciseItem() {
+    if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
+    this.exerciseItems.push({
+      exercise: this.mainFormGroup.get('exercise').value,
+      duration: this.mainFormGroup.get('duration').value + ' minutes',
+      calories: this.mainFormGroup.get('calories').value,
+    });
+    this.mainFormGroup.get('exercise').reset();
+    this.mainFormGroup.get('duration').reset();
+    this.mainFormGroup.get('calories').reset();
+    this.caloriesChanged$.next();
+  }
+
+  public removeExerciseItem(index) {
+    this.exerciseItems.splice(index, 1);
+    this.caloriesChanged$.next();
+  }
 
   ngOnInit() {
     this.exerciseData.forEach(exercise => {
       const splitExerciseData = exercise.split('"');
-      const exerciseData = { name: splitExerciseData[1], caloriesPerKgPerHour: splitExerciseData[2].slice(1 , splitExerciseData[2].length)};
-      console.log(exerciseData);
+      const formattedExercise = {
+        value: splitExerciseData[1],
+        caloriesPerLbPerHalfHour: splitExerciseData[2].slice(1 , splitExerciseData[2].length)
+      };
+      this.exerciseOptions.push(formattedExercise);
     });
+
+    combineLatest([
+      this.mainFormGroup.get('exercise').valueChanges,
+      this.mainFormGroup.get('duration').valueChanges,
+    ]).pipe(
+      takeUntil(this.componentDestruction$),
+    ).subscribe(([exercise, duration]) => {
+      if (!exercise || !duration || duration < 0) { return; }
+      const foundExercise = this.exerciseOptions.find(e => e.value.toLowerCase().includes(exercise.toLowerCase()));
+      if (!!foundExercise) {
+        // Still not sure about this, the dataset just seems to be wrong/inconsistent with itself.
+        // It says units are measured in calories burned/per kg/per hour, but when calculated it seems that
+        // The numbers are closer to calories burned/per lb/per half hour. Might be missing something, but I don't think I am
+        let caloriesBurned = foundExercise.caloriesPerLbPerHalfHour * (this.userWeight * 2.2) * (duration / 30);
+        caloriesBurned = Math.round(caloriesBurned / 10) * 10;
+        this.mainFormGroup.get('calories').setValue(caloriesBurned);
+      } else {
+        this.mainFormGroup.get('calories').reset();
+      }
+    });
+
+    this.caloriesChanged$.pipe(
+      takeUntil(this.componentDestruction$)
+    ).subscribe(() => {
+      this.caloriesBurnedToday = 0;
+      for (const exerciseItem of this.exerciseItems) {
+        this.caloriesBurnedToday += exerciseItem.calories;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.componentDestruction$.next();
   }
 
 }
