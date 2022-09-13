@@ -3,10 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="d58865f8-0664-4e2e-86d5-b308667529d9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fitness-dashboard/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/app.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/app.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/app.component.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/exercise/exercise.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/exercise/exercise.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/goals/goals.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/goals/goals.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/nutrition/nutrition.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/nutrition/nutrition.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/styles.scss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +53,7 @@
       <workItem from="1661722810687" duration="2422000" />
       <workItem from="1661726037049" duration="39000" />
       <workItem from="1661805366349" duration="174000" />
-      <workItem from="1663101602985" duration="4499000" />
+      <workItem from="1663101602985" duration="4891000" />
     </task>
     <servers />
   </component>

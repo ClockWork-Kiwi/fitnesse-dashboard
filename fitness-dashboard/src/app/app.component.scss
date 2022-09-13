@@ -18,6 +18,11 @@
   width: 100%;
 }
 
+.route-item:hover {
+  background-color: #c2c2c2;
+  color: #98ffc2
+}
+
 ::ng-deep .mat-form-field-label {
   color: white !important;
 }
