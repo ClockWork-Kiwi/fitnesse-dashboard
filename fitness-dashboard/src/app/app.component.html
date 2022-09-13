@@ -1,13 +1,15 @@
-<div class="col-12 bg-primary title-bar">
-  <h1 class="mb-0">Fitnesse</h1>
+<div class="col-12 bg-primary title-bar px-2">
+  <h1 class="mb-0 text-secondary">Fitnesse</h1>
 </div>
 <mat-drawer-container class="app-container bg-primary">
   <mat-drawer class="col-2 bg-light side-bar" mode="side" opened>
     <ng-container *ngFor="let route of routes">
-      <div class="col-12 my-2 ml-2" (click)="navigateToRoute(route.route)">{{route.label}}</div>
+      <div class="col-12 my-2 px-2" (click)="navigateToRoute(route.route)">
+        <h4>{{route.label}}</h4>
+      </div>
     </ng-container>
   </mat-drawer>
-  <mat-drawer-content class="col-9">
+  <mat-drawer-content class="col-10">
     <div class="container-fluid">
       <router-outlet></router-outlet>
     </div>

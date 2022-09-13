@@ -3,20 +3,25 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 $theme-colors: (
-  "primary": #c9ffea,
-  "light": #FFFFFF
+  "primary": #4f4f4f,
+  "light": #FFFFFF,
+  "secondary": #98ffc2,
 );
 
 * {
   font-size: 1.2rem;
 }
 
+mat-hint {
+  font-size: 1rem;
+}
+
 .mat-form-field {
   width: 100%
 }
-
-mat-hint {
-  font-size: 1rem;
+/* Font color */
+input.mat-input-element {
+  color: white;
 }
 
 @import "node_modules/bootstrap/scss/bootstrap";
