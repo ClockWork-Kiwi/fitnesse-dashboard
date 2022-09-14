@@ -13,9 +13,7 @@ export class ExerciseService implements OnDestroy {
   private store = [];
   private subject$ = new BehaviorSubject(this.store);
   // In case we want the data transformed or filtered before returning
-  public observable$ = this.subject$.pipe(
-    tap(data => { console.log(data); })
-  );
+  public observable$ = this.subject$.pipe();
 
   constructor(
     private http: HttpClient,
