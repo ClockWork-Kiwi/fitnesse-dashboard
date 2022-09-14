@@ -2,7 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, Validators} from '@angular/forms';
 import {combineLatest, Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {takeUntil, tap} from 'rxjs/operators';
+import {UserService} from '../../services/user.service';
+import {ExerciseService} from '../../services/exercise.service';
 
 @Component({
   selector: 'app-exercise',
@@ -207,11 +209,19 @@ export class ExerciseComponent implements OnInit, OnDestroy {
     '"Downhill snow skiing, racing",1.64782526567164',
   ];
 
-  public exerciseItems = [];
   public caloriesBurnedToday = 0;
 
-  private caloriesChanged$ = new Subject();
   private componentDestruction$ = new Subject();
+
+  public exerciseItems$ = this.exerciseService.observable$.pipe(
+    takeUntil(this.componentDestruction$),
+    tap(data => {
+      this.caloriesBurnedToday = 0;
+      for (const exerciseItem of data) {
+        this.caloriesBurnedToday += exerciseItem.calories;
+      }
+    })
+  );
 
   public mainFormGroup = this.fb.group({
     exercise: [null, Validators.required],
@@ -221,24 +231,26 @@ export class ExerciseComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
+    private userService: UserService,
+    private exerciseService: ExerciseService,
   ) { }
 
   public addExerciseItem() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
-    this.exerciseItems.push({
-      exercise: this.mainFormGroup.get('exercise').value,
-      duration: this.mainFormGroup.get('duration').value + ' minutes',
-      calories: this.mainFormGroup.get('calories').value,
-    });
-    this.mainFormGroup.get('exercise').reset();
-    this.mainFormGroup.get('duration').reset();
-    this.mainFormGroup.get('calories').reset();
-    this.caloriesChanged$.next();
+    // this.exerciseItems.push({
+    //   exercise: this.mainFormGroup.get('exercise').value,
+    //   duration: this.mainFormGroup.get('duration').value + ' minutes',
+    //   calories: this.mainFormGroup.get('calories').value,
+    // });
+    // this.mainFormGroup.get('exercise').reset();
+    // this.mainFormGroup.get('duration').reset();
+    // this.mainFormGroup.get('calories').reset();
+    // this.caloriesChanged$.next();
   }
 
   public removeExerciseItem(index) {
-    this.exerciseItems.splice(index, 1);
-    this.caloriesChanged$.next();
+    // this.exerciseItems.splice(index, 1);
+    // this.caloriesChanged$.next();
   }
 
   ngOnInit() {
@@ -268,15 +280,6 @@ export class ExerciseComponent implements OnInit, OnDestroy {
         this.mainFormGroup.get('calories').setValue(caloriesBurned);
       } else {
         this.mainFormGroup.get('calories').reset();
-      }
-    });
-
-    this.caloriesChanged$.pipe(
-      takeUntil(this.componentDestruction$)
-    ).subscribe(() => {
-      this.caloriesBurnedToday = 0;
-      for (const exerciseItem of this.exerciseItems) {
-        this.caloriesBurnedToday += exerciseItem.calories;
       }
     });
   }

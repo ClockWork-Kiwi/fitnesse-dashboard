@@ -1,12 +1,14 @@
 <div class="row">
   <div class="col-8">
     <h2 class="text-secondary">Today I had...</h2>
-    <ng-container *ngIf="!!foodItems && foodItems.length > 0">
-      <div class="row mt-2" *ngFor="let foodItem of foodItems; let i = index">
-            <strong class="col-6 text-white">{{foodItem.food_name}}</strong>
-            <strong class="col-4 text-white">{{foodItem.calories}} calorie{{foodItem.calories > 1 ? 's' : ''}}</strong>
-            <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeFoodItem(foodItem.id)"></fa-icon>
-      </div>
+    <ng-container *ngIf="(foodItems$ | async) as foodItems">
+      <ng-container *ngIf="!!foodItems && foodItems.length > 0">
+        <div class="row mt-2" *ngFor="let foodItem of foodItems; let i = index">
+              <strong class="col-6 text-white">{{foodItem.food_name}}</strong>
+              <strong class="col-4 text-white">{{foodItem.calories}} calorie{{foodItem.calories > 1 ? 's' : ''}}</strong>
+              <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeFoodItem(foodItem.id)"></fa-icon>
+        </div>
+      </ng-container>
     </ng-container>
     <div class="row">
       <field-text
