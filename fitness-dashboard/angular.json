@@ -66,7 +66,8 @@
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"options": {
-						"browserTarget": "fitness-dashboard:build"
+						"browserTarget": "fitness-dashboard:build",
+            "proxyConfig": "src/proxy.conf.json"
 					},
 					"configurations": {
 						"production": {

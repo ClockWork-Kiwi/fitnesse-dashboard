@@ -2,7 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {switchMap, takeUntil} from 'rxjs/operators';
+import {NutritionService} from '../../services/nutrition.service';
+import {UserService} from '../../services/user.service';
 
 @Component({
   selector: 'app-nutrition',
@@ -30,6 +32,8 @@ export class NutritionComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
+    private userService: UserService,
+    private nutritionService: NutritionService,
   ) { }
 
   public addFoodItem() {
@@ -58,6 +62,12 @@ export class NutritionComponent implements OnInit, OnDestroy {
         this.caloriesAllowedToday -= foodItem.calories;
         this.caloriesConsumedToday += foodItem.calories;
       }
+    });
+
+    this.userService.userId$.pipe(
+      switchMap(userID => this.nutritionService.getUserNutrition(userID))
+    ).subscribe(nutritionData => {
+      console.log(nutritionData);
     });
   }
 
