@@ -2,7 +2,7 @@ import {Injectable, OnDestroy} from '@angular/core';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {UserService} from './user.service';
-import {takeUntil, tap} from 'rxjs/operators';
+import {filter, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,35 @@ export class ExerciseService implements OnDestroy {
       this.subject$.next(this.store);
     });
   }
+
+  public saveExerciseItem(item: any) {
+    item.date = new Date();
+    return this.userService.userId$.pipe(
+      filter(userID => !!userID),
+      take(1),
+      switchMap(userID => this.http.patch(`api/exercise/${userID}`, {...item})),
+      tap(data => {
+        this.store.push(data);
+        this.subject$.next(this.store);
+      })
+    );
+  }
+
+  public deleteExerciseItem(itemID: number) {
+    return this.userService.userId$.pipe(
+      filter(userID => !!userID),
+      take(1),
+      switchMap(userID => this.http.request('delete', `api/exercise/${userID}`, { body: { id: itemID } })),
+      tap(result => {
+        const removeIndex = this.store.findIndex(e => e.id === itemID);
+        if (removeIndex > -1) {
+          this.store.splice(removeIndex, 1);
+          this.subject$.next(this.store);
+        }
+      })
+    );
+  }
+
 
   ngOnDestroy() {
     this.destruction$.next();

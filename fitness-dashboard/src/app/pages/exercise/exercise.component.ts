@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, Validators} from '@angular/forms';
 import {combineLatest, Subject} from 'rxjs';
-import {takeUntil, tap} from 'rxjs/operators';
+import {switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {UserService} from '../../services/user.service';
 import {ExerciseService} from '../../services/exercise.service';
 
@@ -224,7 +224,7 @@ export class ExerciseComponent implements OnInit, OnDestroy {
   );
 
   public mainFormGroup = this.fb.group({
-    exercise: [null, Validators.required],
+    exercise_name: [null, Validators.required],
     duration: [null],
     calories: [null, Validators.required],
   });
@@ -237,20 +237,16 @@ export class ExerciseComponent implements OnInit, OnDestroy {
 
   public addExerciseItem() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
-    // this.exerciseItems.push({
-    //   exercise: this.mainFormGroup.get('exercise').value,
-    //   duration: this.mainFormGroup.get('duration').value + ' minutes',
-    //   calories: this.mainFormGroup.get('calories').value,
-    // });
-    // this.mainFormGroup.get('exercise').reset();
-    // this.mainFormGroup.get('duration').reset();
-    // this.mainFormGroup.get('calories').reset();
-    // this.caloriesChanged$.next();
+    const exerciseItem = this.mainFormGroup.getRawValue();
+    this.exerciseService.saveExerciseItem(exerciseItem).subscribe(result => {
+      this.mainFormGroup.get('exercise_name').reset();
+      this.mainFormGroup.get('duration').reset();
+      this.mainFormGroup.get('calories').reset();
+    });
   }
 
-  public removeExerciseItem(index) {
-    // this.exerciseItems.splice(index, 1);
-    // this.caloriesChanged$.next();
+  public removeExerciseItem(itemID) {
+    this.exerciseService.deleteExerciseItem(itemID).subscribe();
   }
 
   ngOnInit() {
@@ -264,7 +260,7 @@ export class ExerciseComponent implements OnInit, OnDestroy {
     });
 
     combineLatest([
-      this.mainFormGroup.get('exercise').valueChanges,
+      this.mainFormGroup.get('exercise_name').valueChanges,
       this.mainFormGroup.get('duration').valueChanges,
     ]).pipe(
       takeUntil(this.componentDestruction$),

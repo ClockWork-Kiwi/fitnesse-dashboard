@@ -7,7 +7,7 @@
           <strong class="col-6">{{exerciseItem.exercise_name}}</strong>
           <strong class="col-2">{{exerciseItem.duration}}</strong>
           <strong class="col-2">{{exerciseItem.calories}}</strong>
-          <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeExerciseItem(i)"></fa-icon>
+          <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeExerciseItem(exerciseItem.id)"></fa-icon>
         </div>
     </ng-container>
     </ng-container>
@@ -16,7 +16,7 @@
         class="col-6"
         [options]="exerciseOptions"
         label="Exercise"
-        [inputControl]="mainFormGroup | getControl: 'exercise'">
+        [inputControl]="mainFormGroup | getControl: 'exercise_name'">
       </field-text>
       <field-number
         class="col-2"
