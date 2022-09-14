@@ -31,6 +31,14 @@ export class NutritionService implements OnDestroy {
     });
   }
 
+  public saveNutritionItem(userID: number, item: any) {
+    return this.http.patch(`api/nutrition/${userID}`, {...item});
+  }
+
+  public deleteNutritionItem(userID: number, itemID: number) {
+    return this.http.request('delete', `api/nutrition/${userID}`, { body: { id: itemID } });
+  }
+
   ngOnDestroy() {
     this.serviceDestruction$.next();
   }

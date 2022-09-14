@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
-import {switchMap, takeUntil} from 'rxjs/operators';
+import {switchMap, take, takeUntil} from 'rxjs/operators';
 import {NutritionService} from '../../services/nutrition.service';
 import {UserService} from '../../services/user.service';
 
@@ -26,8 +26,12 @@ export class NutritionComponent implements OnInit, OnDestroy {
   private componentDestruction$ = new Subject();
 
   public mainFormGroup = this.fb.group({
-    foodName: [null, Validators.required],
+    food_name: [null, Validators.required],
     calories: [null, Validators.required],
+    fat: [0],
+    carbs: [0],
+    protein: [0],
+    date: [null],
   });
 
   constructor(
@@ -38,18 +42,30 @@ export class NutritionComponent implements OnInit, OnDestroy {
 
   public addFoodItem() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
-    this.foodItems.push({
-      foodName: this.mainFormGroup.get('foodName').value,
-      calories: this.mainFormGroup.get('calories').value,
+    this.mainFormGroup.get('date').setValue(new Date());
+    const foodItem = this.mainFormGroup.getRawValue();
+    this.userService.userId$.pipe(
+      take(1),
+      switchMap(userID => this.nutritionService.saveNutritionItem(userID, foodItem))
+    ).subscribe(result => {
+      this.foodItems.push(result);
+      this.mainFormGroup.get('food_name').reset();
+      this.mainFormGroup.get('calories').reset();
+      this.caloriesChanged$.next();
     });
-    this.mainFormGroup.get('foodName').reset();
-    this.mainFormGroup.get('calories').reset();
-    this.caloriesChanged$.next();
   }
 
-  public removeFoodItem(index) {
-    this.foodItems.splice(index, 1);
-    this.caloriesChanged$.next();
+  public removeFoodItem(itemID) {
+    this.userService.userId$.pipe(
+      take(1),
+      switchMap(userID => this.nutritionService.deleteNutritionItem(userID, itemID))
+    ).subscribe(result => {
+      const removeIndex = this.foodItems.findIndex(item => item.id === itemID);
+      if (removeIndex > -1) {
+        this.foodItems.splice(removeIndex, 1);
+        this.caloriesChanged$.next();
+      }
+    });
   }
 
   ngOnInit() {
