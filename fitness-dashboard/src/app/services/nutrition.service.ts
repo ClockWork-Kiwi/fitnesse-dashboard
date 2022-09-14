@@ -32,6 +32,7 @@ export class NutritionService implements OnDestroy {
   }
 
   public saveNutritionItem(userID: number, item: any) {
+    item.date = new Date();
     return this.http.patch(`api/nutrition/${userID}`, {...item});
   }
 

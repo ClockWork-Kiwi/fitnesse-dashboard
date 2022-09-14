@@ -1,15 +1,23 @@
 .title-bar {
-  border-bottom: black;
+  border-bottom: #1a1a1a;
   border-bottom-style: solid;
   border-bottom-width: 0.2em;
 }
 .side-bar {
-  border-right: black;
-  border-right-style: solid;
-  border-right-width: 0.2em;
+  // background-image: linear-gradient(#4F4F4F, #FFFFFF);
+  background-image:  url(src/assets/menu-background.jpg);
+  background-repeat: repeat;
+}
+
+
+.background {
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to bottom right, #444444, #888888);
 }
 
 .app-container {
+  background: none;
   width: 100%;
   height: 100%;
 }
@@ -19,7 +27,7 @@
 }
 
 .route-item:hover {
-  background-color: #c2c2c2;
+  background-color: rgba(194, 194, 194, 0.3);
   color: #98ffc2
 }
 

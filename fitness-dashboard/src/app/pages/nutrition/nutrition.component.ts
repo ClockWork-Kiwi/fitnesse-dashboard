@@ -31,7 +31,6 @@ export class NutritionComponent implements OnInit, OnDestroy {
     fat: [0],
     carbs: [0],
     protein: [0],
-    date: [null],
   });
 
   constructor(
@@ -42,7 +41,6 @@ export class NutritionComponent implements OnInit, OnDestroy {
 
   public addFoodItem() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
-    this.mainFormGroup.get('date').setValue(new Date());
     const foodItem = this.mainFormGroup.getRawValue();
     this.userService.userId$.pipe(
       take(1),
