@@ -3,11 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="d58865f8-0664-4e2e-86d5-b308667529d9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fitness-dashboard/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/nutrition/nutrition.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/nutrition/nutrition.component.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/nutrition/nutrition.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/pages/nutrition/nutrition.component.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/services/nutrition.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/services/nutrition.service.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fitness-dashboard/src/app/services/user.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/src/app/services/user.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fitness-dashboard/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/fitness-dashboard/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

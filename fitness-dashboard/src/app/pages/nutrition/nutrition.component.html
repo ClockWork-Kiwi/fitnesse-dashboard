@@ -3,8 +3,8 @@
     <h2 class="text-secondary">Today I had...</h2>
     <ng-container *ngIf="!!foodItems && foodItems.length > 0">
       <div class="row mt-2" *ngFor="let foodItem of foodItems; let i = index">
-            <strong class="col-6">{{foodItem.foodName}}</strong>
-            <strong class="col-4">{{foodItem.calories}} Calories</strong>
+            <strong class="col-6 text-white">{{foodItem.food_name}}</strong>
+            <strong class="col-4 text-white">{{foodItem.calories}} Calories</strong>
             <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeFoodItem(i)"></fa-icon>
       </div>
     </ng-container>

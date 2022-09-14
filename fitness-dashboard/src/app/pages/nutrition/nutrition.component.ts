@@ -64,10 +64,11 @@ export class NutritionComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.userService.userId$.pipe(
-      switchMap(userID => this.nutritionService.getUserNutrition(userID))
-    ).subscribe(nutritionData => {
-      console.log(nutritionData);
+    this.nutritionService.observable$.pipe(
+      takeUntil(this.componentDestruction$),
+    ).subscribe(data => {
+      this.foodItems = data;
+      this.caloriesChanged$.next();
     });
   }
 
