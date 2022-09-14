@@ -15,7 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public routes = [
     { label: 'Dashboard', route: 'dashboard' },
-    { label: 'Goals', route: 'goals' },
+    { label: 'My Info/Goals', route: 'goals' },
     { label: 'Nutrition', route: 'nutrition' },
     { label: 'Exercise', route: 'exercise' },
   ];
