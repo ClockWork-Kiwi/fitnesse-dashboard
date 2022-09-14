@@ -44,27 +44,20 @@ export class NutritionComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
     private nutritionService: NutritionService,
   ) { }
 
   public addFoodItem() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
     const foodItem = this.mainFormGroup.getRawValue();
-    this.userService.userId$.pipe(
-      take(1),
-      switchMap(userID => this.nutritionService.saveNutritionItem(userID, foodItem))
-    ).subscribe(result => {
+    this.nutritionService.saveNutritionItem(foodItem).subscribe(result => {
       this.mainFormGroup.get('food_name').reset();
       this.mainFormGroup.get('calories').reset();
     });
   }
 
   public removeFoodItem(itemID) {
-    this.userService.userId$.pipe(
-      take(1),
-      switchMap(userID => this.nutritionService.deleteNutritionItem(userID, itemID))
-    ).subscribe();
+    this.nutritionService.deleteNutritionItem(itemID).subscribe();
   }
 
   ngOnInit() {}
