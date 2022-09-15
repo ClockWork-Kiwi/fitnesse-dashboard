@@ -4,6 +4,7 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {FitnessCalculatorService} from '../../services/fitness-calculator.service';
 import {UserService} from '../../services/user.service';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-goals',
@@ -68,6 +69,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private userService: UserService,
     private fitnessCalculatorService: FitnessCalculatorService,
+    private snackBar: MatSnackBar,
   ) { }
 
   public calculateCalories(formValue) {
@@ -87,6 +89,15 @@ export class GoalsComponent implements OnInit, OnDestroy {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
     this.userService.saveUserData(this.mainFormGroup.getRawValue()).subscribe(data => {
       if (!!data) {
+        this.snackBar.open(
+          'Saved Successfully!',
+          'Dismiss',
+          {
+            duration: 100000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: 'panel-success',
+          });
         this.mainFormGroup.markAsPristine();
       }
     });

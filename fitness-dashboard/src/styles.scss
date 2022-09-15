@@ -24,5 +24,17 @@ input.mat-input-element {
   color: white;
 }
 
+.panel-success {
+  border-style: solid;
+  border-width: 2px;
+  border-color: #98ffc2;
+  background-color: #444444;
+  color: white;
+
+  .mat-button {
+    color: #9f9f9f;
+  }
+}
+
 
 @import "node_modules/bootstrap/scss/bootstrap";
