@@ -39,8 +39,8 @@ export class NutritionService implements OnDestroy {
       filter(userID => !!userID),
       take(1),
       switchMap(userID => this.http.patch(`api/nutrition/${userID}`, {...item})),
-      tap(data => {
-        this.store.push(data);
+      tap((data: any[]) => {
+        this.store = data;
         this.subject$.next(this.store);
       })
     );

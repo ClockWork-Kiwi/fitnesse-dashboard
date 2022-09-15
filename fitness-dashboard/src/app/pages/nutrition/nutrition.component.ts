@@ -17,20 +17,9 @@ export class NutritionComponent implements OnInit, OnDestroy {
   public removeIcon = faMinusCircle;
   private componentDestruction$ = new Subject();
 
-  // Mocked up number- to be retrieved from database in future
-  public totalCaloriesAllowed = 2200;
-  public caloriesAllowedToday = 2200;
-  public caloriesConsumedToday = 0;
-
   public foodItems$ = this.nutritionService.observable$.pipe(
     takeUntil(this.componentDestruction$),
     tap(data => {
-      this.caloriesAllowedToday = this.totalCaloriesAllowed;
-      this.caloriesConsumedToday = 0;
-      for (const foodItem of data) {
-        this.caloriesAllowedToday -= foodItem.calories;
-        this.caloriesConsumedToday += foodItem.calories;
-      }
     })
   );
 
@@ -45,15 +34,17 @@ export class NutritionComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private nutritionService: NutritionService,
+    public userService: UserService,
   ) { }
 
   public addFoodItem() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
     const foodItem = this.mainFormGroup.getRawValue();
-    this.nutritionService.saveNutritionItem(foodItem).subscribe(result => {
-      this.mainFormGroup.get('food_name').reset();
-      this.mainFormGroup.get('calories').reset();
-    });
+    this.mainFormGroup.get('food_name').reset();
+    this.mainFormGroup.get('calories').reset();
+    this.nutritionService.saveNutritionItem(foodItem).pipe(
+      switchMap(foodItems => this.userService.saveCaloriesConsumed(foodItems)),
+    ).subscribe(() => {});
   }
 
   public removeFoodItem(itemID) {

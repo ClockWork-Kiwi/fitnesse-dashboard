@@ -4,9 +4,9 @@
     <ng-container *ngIf="(foodItems$ | async) as foodItems">
       <ng-container *ngIf="!!foodItems && foodItems.length > 0">
         <div class="row mt-2" *ngFor="let foodItem of foodItems; let i = index">
-              <strong class="col-6 text-white">{{foodItem.food_name}}</strong>
-              <strong class="col-4 text-white">{{foodItem.calories}} calorie{{foodItem.calories > 1 ? 's' : ''}}</strong>
-              <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeFoodItem(foodItem.id)"></fa-icon>
+          <strong class="col-6 text-white">{{foodItem.food_name}}</strong>
+          <strong class="col-4 text-white">{{foodItem.calories}} calorie{{foodItem.calories > 1 ? 's' : ''}}</strong>
+          <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeFoodItem(foodItem.id)"></fa-icon>
         </div>
       </ng-container>
     </ng-container>
@@ -23,18 +23,22 @@
       </field-number>
       <fa-icon class="col-2 pt-4 text-secondary" [icon]="addIcon" (click)="addFoodItem()"></fa-icon>
     </div>
-    <div class="row mt-2">
-      <div class="col-6"></div>
-      <div class="col-4">
-        <strong class="text-white">{{caloriesConsumedToday > 0 ? caloriesConsumedToday : 'No'}} Calories Consumed</strong>
+    <ng-container *ngIf="(userService.caloriesConsumed$ | async) as caloriesConsumed">
+      <div class="row mt-2">
+        <div class="col-6"></div>
+        <div class="col-4">
+          <strong class="text-white">{{caloriesConsumed > 0 ? caloriesConsumed : 'No'}} Calories Consumed</strong>
+        </div>
       </div>
-    </div>
-    <div class="row mt-2">
-      <div class="col-6"></div>
-      <div class="col-4">
-        <strong class="text-secondary">{{caloriesAllowedToday}} Left for today!</strong>
+    </ng-container>
+    <ng-container *ngIf="(userService.observable$ | async) as userData">
+      <div class="row mt-2">
+        <div class="col-6"></div>
+        <div class="col-4">
+          <strong class="text-secondary">{{userData.calories_allowed}} Left for today!</strong>
+        </div>
       </div>
-    </div>
+    </ng-container>
   </div>
   <div class="col-4">
     <h2 class="text-secondary">My Diet...</h2>

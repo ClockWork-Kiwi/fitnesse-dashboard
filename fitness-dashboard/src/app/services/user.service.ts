@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject, of, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {takeUntil, tap} from 'rxjs/operators';
+import {switchMap, takeUntil, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,13 @@ export class UserService implements OnDestroy {
 
   private store = {};
   private subject$ = new BehaviorSubject(this.store);
-  public observable$ = this.subject$.pipe();
+  public observable$ = this.subject$.pipe() as Observable<any>;
+
+  private caloriesConsumed = 0;
+  public caloriesConsumed$ = new BehaviorSubject(this.caloriesConsumed);
+
+  private caloriesBurned = 0;
+  public caloriesBurned$ = new BehaviorSubject(this.caloriesBurned);
 
   constructor(
     private http: HttpClient
@@ -24,6 +30,7 @@ export class UserService implements OnDestroy {
       takeUntil(this.destruction$)
     ).subscribe(userID => {
       this.getUserData(userID);
+      this.getUserCalories(userID);
     });
   }
 
@@ -34,11 +41,38 @@ export class UserService implements OnDestroy {
     });
   }
 
+  public getUserCalories(userID) {
+    this.http.get(`api/user/${userID}/calories`).subscribe((userCalories: any) => {
+      if (!userCalories) { return; }
+      this.caloriesConsumed = userCalories.calories_consumed;
+      this.caloriesConsumed$.next(this.caloriesConsumed);
+      this.caloriesBurned = userCalories.calories_burned;
+      this.caloriesBurned$.next(this.caloriesBurned);
+    });
+  }
+
   public saveUserData(userData: any) {
-    return this.http.patch(`api/user/${userData.id}`, {...userData}).pipe(
+    return this.http.patch(`api/user/${userData.id}`, userData).pipe(
       tap(data => {
         this.store = data;
         this.subject$.next(this.store);
+      }),
+    );
+  }
+
+  public saveCaloriesConsumed(foodItems) {
+    const toSave = {
+      date: new Date(),
+      calories_consumed: 0,
+    };
+    for (const foodItem of foodItems) {
+      toSave.calories_consumed += foodItem.calories;
+    }
+    return this.userId$.pipe(
+      switchMap(userID => this.http.patch(`api/user/${userID}/calories`, toSave)),
+      tap((data: any) => {
+        this.caloriesConsumed = data.calories_consumed;
+        this.caloriesConsumed$.next(this.caloriesConsumed);
       }),
     );
   }
