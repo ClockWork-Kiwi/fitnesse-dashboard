@@ -5,8 +5,8 @@
       <ng-container *ngIf="!!exerciseItems && exerciseItems.length > 0">
         <div class="row mt-4 text-white" *ngFor="let exerciseItem of exerciseItems; let i = index">
           <strong class="col-6">{{exerciseItem.exercise_name}}</strong>
-          <strong class="col-2">{{exerciseItem.duration}}</strong>
-          <strong class="col-2">{{exerciseItem.calories}}</strong>
+          <strong class="col-2">{{exerciseItem.duration}} minute{{exerciseItem.duration > 1 ? 's' : ''}}</strong>
+          <strong class="col-2">{{exerciseItem.calories}} calorie{{exerciseItem.calories > 1 ? 's' : ''}}</strong>
           <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeExerciseItem(exerciseItem.id)"></fa-icon>
         </div>
     </ng-container>
