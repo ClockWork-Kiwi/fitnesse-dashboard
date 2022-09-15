@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
-import {Subject} from "rxjs";
-import {filter, takeUntil} from "rxjs/operators";
+import {Subject} from 'rxjs';
+import {filter, takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
