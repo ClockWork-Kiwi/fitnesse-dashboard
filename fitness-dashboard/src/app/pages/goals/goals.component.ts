@@ -3,6 +3,7 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {FitnessCalculatorService} from '../../services/fitness-calculator.service';
+import {UserService} from '../../services/user.service';
 
 @Component({
   selector: 'app-goals',
@@ -63,6 +64,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
+    private userService: UserService,
     private fitnessCalculatorService: FitnessCalculatorService,
   ) { }
 
@@ -80,6 +82,11 @@ export class GoalsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.userService.observable$.pipe(
+      takeUntil(this.componentDestruction$)
+    ).subscribe(userData => {
+      this.mainFormGroup.patchValue(userData);
+    });
   }
 
   ngOnDestroy() {

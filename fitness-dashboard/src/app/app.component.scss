@@ -58,3 +58,7 @@
   padding-left: 0.25em !important;
   margin-top: 0.3em;
 }
+
+::ng-deep .mat-select-value {
+  color: white
+}
