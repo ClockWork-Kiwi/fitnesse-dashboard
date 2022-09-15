@@ -54,12 +54,14 @@ export class GoalsComponent implements OnInit, OnDestroy {
   };
 
   public mainFormGroup = this.fb.group({
+    id: [null],
     sex: [null, Validators.required],
     age: [null, Validators.required],
     height: [null, Validators.required],
     weight: [null, Validators.required],
-    weightGoal: [null, Validators.required],
-    dietPlan: [null],
+    weight_goal: [null, Validators.required],
+    diet_plan: [null],
+    calories_allowed: [null],
   });
 
   constructor(
@@ -68,20 +70,37 @@ export class GoalsComponent implements OnInit, OnDestroy {
     private fitnessCalculatorService: FitnessCalculatorService,
   ) { }
 
-  public calculateCalories() {
+  public calculateCalories(formValue) {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
     const calculatedCalories = this.fitnessCalculatorService.calculateCalories(
-      this.mainFormGroup.get('sex').value,
-      this.mainFormGroup.get('age').value,
-      this.mainFormGroup.get('height').value,
-      this.mainFormGroup.get('weight').value,
+      formValue.sex,
+      formValue.age,
+      formValue.height,
+      formValue.weight,
       'sedentary',
     );
-    const goalString = this.weightGoalMap[this.mainFormGroup.get('weightGoal').value];
-    this.caloriesAllowed = Math.round(calculatedCalories[goalString] / 10) * 10;
+    const goalString = this.weightGoalMap[formValue.weight_goal];
+    this.mainFormGroup.get('calories_allowed').setValue(Math.round(calculatedCalories[goalString] / 10) * 10, {emitEvent: false});
+  }
+
+  public saveUserDetails() {
+    if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
+    this.userService.saveUserData(this.mainFormGroup.getRawValue()).subscribe(data => {
+      if (!!data) {
+        this.mainFormGroup.markAsPristine();
+      }
+    });
   }
 
   ngOnInit() {
+    this.mainFormGroup.valueChanges.pipe(
+      takeUntil(this.componentDestruction$)
+    ).subscribe(value => {
+      if (!!this.mainFormGroup.valid) {
+        this.calculateCalories(value);
+      }
+    });
+
     this.userService.observable$.pipe(
       takeUntil(this.componentDestruction$)
     ).subscribe(userData => {

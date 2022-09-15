@@ -30,20 +30,22 @@
     label="Weight Goal"
     class="col-2"
     [options]="weightGoalOptions"
-    [inputControl]="mainFormGroup | getControl: 'weightGoal'">
+    [inputControl]="mainFormGroup | getControl: 'weight_goal'">
   </field-select>
   <field-select
     label="Diet Plan"
     class="col-2"
     [options]="dietPlanOptions"
-    [inputControl]="mainFormGroup | getControl: 'dietPlan'">
+    [inputControl]="mainFormGroup | getControl: 'diet_plan'">
   </field-select>
+  <ng-container  *ngIf="(mainFormGroup | getControl: 'calories_allowed').value as caloriesAllowed">
+    <div class="col-4 text-secondary my-auto" *ngIf="!!caloriesAllowed && caloriesAllowed > 0">
+      <h2>Your Daily Caloric Allowance: {{caloriesAllowed}}</h2>
+    </div>
+  </ng-container>
 </div>
-<div class="row">
-  <button class="col-2" (click)="calculateCalories()">
-    Calculate Calories!
+<div class="row mx-1" *ngIf="mainFormGroup.dirty">
+  <button mat-stroked-button class="ml-1 col-2 text-secondary border-secondary" (click)="saveUserDetails()">
+    Save
   </button>
-</div>
-<div class="row mt-5" *ngIf="!!caloriesAllowed">
-  <h2>Your Daily Caloric Allowance: {{caloriesAllowed}}</h2>
 </div>

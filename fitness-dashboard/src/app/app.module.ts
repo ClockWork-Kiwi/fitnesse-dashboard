@@ -13,7 +13,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {PipesModule} from './pipes/pipes.module';
-import {MatSidenavModule} from '@angular/material';
+import {MatButtonModule, MatSidenavModule} from '@angular/material';
 import { NutritionComponent } from './pages/nutrition/nutrition.component';
 import { ExerciseComponent } from './pages/exercise/exercise.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
@@ -36,6 +36,7 @@ import {HttpClientModule} from '@angular/common/http';
     MatFormFieldModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatButtonModule,
     ComponentsModule,
     PipesModule,
     FormsModule,

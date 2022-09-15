@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {BehaviorSubject, of, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {takeUntil} from 'rxjs/operators';
+import {takeUntil, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,15 @@ export class UserService implements OnDestroy {
       this.store = userData;
       this.subject$.next(this.store);
     });
+  }
+
+  public saveUserData(userData: any) {
+    return this.http.patch(`api/user/${userData.id}`, {...userData}).pipe(
+      tap(data => {
+        this.store = data;
+        this.subject$.next(this.store);
+      }),
+    );
   }
 
   ngOnDestroy() {
