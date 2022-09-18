@@ -31,11 +31,11 @@
         </div>
       </div>
     </ng-container>
-    <ng-container *ngIf="(userService.observable$ | async) as userData">
+    <ng-container *ngIf="(userService.caloriesAllowed$ | async) as caloriesAllowed">
       <div class="row mt-2">
         <div class="col-6"></div>
         <div class="col-4">
-          <strong class="text-secondary">{{userData.calories_allowed}} Left for today!</strong>
+          <strong class="text-secondary">{{caloriesAllowed}} Left for today!</strong>
         </div>
       </div>
     </ng-container>

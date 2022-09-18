@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, Validators} from '@angular/forms';
 import {combineLatest, Subject} from 'rxjs';
-import {switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {UserService} from '../../services/user.service';
 import {ExerciseService} from '../../services/exercise.service';
 
@@ -17,7 +17,9 @@ export class ExerciseComponent implements OnInit, OnDestroy {
   public removeIcon = faMinusCircle;
   public exerciseOptions = [];
   // Hard coded value- it must be replaced by value from database later
-  private userWeight = 89;
+  private userWeight$ = this.userService.observable$.pipe(
+    map(userData => userData.weight)
+  );
 
   public exerciseData = [
     '"Cycling, mountain bike, bmx",1.75072971940299',
@@ -208,20 +210,7 @@ export class ExerciseComponent implements OnInit, OnDestroy {
     '"Downhill snow skiing, moderate",1.23485344477612',
     '"Downhill snow skiing, racing",1.64782526567164',
   ];
-
-  public caloriesBurnedToday = 0;
-
   private componentDestruction$ = new Subject();
-
-  public exerciseItems$ = this.exerciseService.observable$.pipe(
-    takeUntil(this.componentDestruction$),
-    tap(data => {
-      this.caloriesBurnedToday = 0;
-      for (const exerciseItem of data) {
-        this.caloriesBurnedToday += exerciseItem.calories;
-      }
-    })
-  );
 
   public mainFormGroup = this.fb.group({
     exercise_name: [null, Validators.required],
@@ -231,18 +220,19 @@ export class ExerciseComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
-    private exerciseService: ExerciseService,
+    public userService: UserService,
+    public exerciseService: ExerciseService,
   ) { }
 
   public addExerciseItem() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
     const exerciseItem = this.mainFormGroup.getRawValue();
-    this.exerciseService.saveExerciseItem(exerciseItem).subscribe(result => {
-      this.mainFormGroup.get('exercise_name').reset();
-      this.mainFormGroup.get('duration').reset();
-      this.mainFormGroup.get('calories').reset();
-    });
+    this.mainFormGroup.get('exercise_name').reset();
+    this.mainFormGroup.get('duration').reset();
+    this.mainFormGroup.get('calories').reset();
+    this.exerciseService.saveExerciseItem(exerciseItem).pipe(
+      switchMap(exerciseItems => this.userService.saveCaloriesBurned(exerciseItems)),
+    ).subscribe(() => {});
   }
 
   public removeExerciseItem(itemID) {
@@ -262,16 +252,17 @@ export class ExerciseComponent implements OnInit, OnDestroy {
     combineLatest([
       this.mainFormGroup.get('exercise_name').valueChanges,
       this.mainFormGroup.get('duration').valueChanges,
+      this.userWeight$,
     ]).pipe(
       takeUntil(this.componentDestruction$),
-    ).subscribe(([exercise, duration]) => {
-      if (!exercise || !duration || duration < 0) { return; }
+    ).subscribe(([exercise, duration, userWeight]) => {
+      if (!exercise || !userWeight || !duration || duration < 0) { return; }
       const foundExercise = this.exerciseOptions.find(e => e.value.toLowerCase().includes(exercise.toLowerCase()));
       if (!!foundExercise) {
         // Still not sure about this, the dataset just seems to be wrong/inconsistent with itself.
         // It says units are measured in calories burned/per kg/per hour, but when calculated it seems that
         // The numbers are closer to calories burned/per lb/per half hour. Might be missing something, but I don't think I am
-        let caloriesBurned = foundExercise.caloriesPerLbPerHalfHour * (this.userWeight * 2.2) * (duration / 30);
+        let caloriesBurned = foundExercise.caloriesPerLbPerHalfHour * (userWeight * 2.2) * (duration / 30);
         caloriesBurned = Math.round(caloriesBurned / 10) * 10;
         this.mainFormGroup.get('calories').setValue(caloriesBurned);
       } else {

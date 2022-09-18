@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject, Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {switchMap, takeUntil, tap} from 'rxjs/operators';
+import {map, switchMap, takeUntil, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +22,16 @@ export class UserService implements OnDestroy {
 
   private caloriesBurned = 0;
   public caloriesBurned$ = new BehaviorSubject(this.caloriesBurned);
+
+  public caloriesAllowed$ = combineLatest([
+    this.observable$,
+    this.caloriesBurned$,
+    this.caloriesConsumed$
+  ]).pipe(
+    map(([userData, caloriesBurned, caloriesConsumed]) => {
+      return userData.calories_allowed + caloriesBurned - caloriesConsumed;
+    })
+  );
 
   constructor(
     private http: HttpClient
@@ -73,6 +83,23 @@ export class UserService implements OnDestroy {
       tap((data: any) => {
         this.caloriesConsumed = data.calories_consumed;
         this.caloriesConsumed$.next(this.caloriesConsumed);
+      }),
+    );
+  }
+
+  public saveCaloriesBurned(exerciseItems) {
+    const toSave = {
+      date: new Date(),
+      calories_burned: 0,
+    };
+    for (const exerciseItem of exerciseItems) {
+      toSave.calories_burned += exerciseItem.calories;
+    }
+    return this.userId$.pipe(
+      switchMap(userID => this.http.patch(`api/user/${userID}/calories`, toSave)),
+      tap((data: any) => {
+        this.caloriesBurned = data.calories_burned;
+        this.caloriesBurned$.next(this.caloriesBurned);
       }),
     );
   }
