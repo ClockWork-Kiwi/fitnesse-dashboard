@@ -7,7 +7,7 @@ import {UserService} from './user.service';
 @Injectable({
   providedIn: 'root'
 })
-export class NutritionService implements OnDestroy {
+export class UserNutritionService implements OnDestroy {
 
   private destruction$ = new Subject();
   private store = [];
