@@ -21,7 +21,7 @@ export class TextComponent implements OnInit, OnDestroy {
   constructor() { }
 
   private _filter(text) {
-    if (!this.options) { return []; }
+    if (!this.options || !this.options.length) { return []; }
     const filterText = text.toLowerCase();
 
     return this.options.filter(option => option.value.toLowerCase().includes(filterText));
