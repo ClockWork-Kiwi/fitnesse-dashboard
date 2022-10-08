@@ -54,9 +54,9 @@ export class UserService implements OnDestroy {
   public getUserCalories(userID) {
     this.http.get(`api/user/${userID}/calories`).subscribe((userCalories: any) => {
       if (!userCalories) { return; }
-      this.caloriesConsumed = userCalories.calories_consumed;
+      this.caloriesConsumed = userCalories.calories_consumed || 0;
       this.caloriesConsumed$.next(this.caloriesConsumed);
-      this.caloriesBurned = userCalories.calories_burned;
+      this.caloriesBurned = userCalories.calories_burned || 0;
       this.caloriesBurned$.next(this.caloriesBurned);
     });
   }
