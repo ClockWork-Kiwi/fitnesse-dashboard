@@ -69,7 +69,7 @@
         </div>
       </div>
     </ng-container>
-    <ng-container *ngIf="(userService.caloriesAllowed$ | async) as caloriesAllowed">
+    <ng-container *ngIf="(userService.caloriesLeft$ | async) as caloriesAllowed">
       <div class="row mt-2">
         <div class="col-8"></div>
         <div class="col-4">

@@ -13,7 +13,7 @@ export class UserService implements OnDestroy {
 
   private destruction$ = new Subject();
 
-  private store = {};
+  private store = {} as any;
   private subject$ = new BehaviorSubject(this.store);
   public observable$ = this.subject$.pipe() as Observable<any>;
 
@@ -23,7 +23,7 @@ export class UserService implements OnDestroy {
   private caloriesBurned = 0;
   public caloriesBurned$ = new BehaviorSubject(this.caloriesBurned);
 
-  public caloriesAllowed$ = combineLatest([
+  public caloriesLeft$ = combineLatest([
     this.observable$,
     this.caloriesBurned$,
     this.caloriesConsumed$
@@ -74,6 +74,7 @@ export class UserService implements OnDestroy {
     const toSave = {
       date: new Date(),
       calories_consumed: 0,
+      calories_allowed: this.store.calories_allowed,
     };
     for (const foodItem of foodItems) {
       toSave.calories_consumed += foodItem.calories;
@@ -91,6 +92,7 @@ export class UserService implements OnDestroy {
     const toSave = {
       date: new Date(),
       calories_burned: 0,
+      calories_allowed: this.store.calories_allowed,
     };
     for (const exerciseItem of exerciseItems) {
       toSave.calories_burned += exerciseItem.calories;
