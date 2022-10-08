@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {filter, map, startWith, takeUntil} from 'rxjs/operators';
@@ -14,6 +14,8 @@ export class TextComponent implements OnInit, OnDestroy {
   @Input() hint;
   @Input() label;
   @Input() options;
+
+  @Output('blur') blur = new EventEmitter();
 
   private componentDestruction$ = new Subject();
   public filteredOptions$;

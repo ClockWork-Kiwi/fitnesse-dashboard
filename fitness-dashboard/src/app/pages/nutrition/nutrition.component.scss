@@ -1,0 +1,18 @@
+.no-y-padding {
+
+  ::ng-deep .mat-form-field-flex {
+    padding-top: 0;
+  }
+
+  ::ng-deep .mat-form-field-underline {
+    position: initial;
+  }
+
+  ::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0.4em;
+  }
+}
+
+.add-icon {
+  padding-top: 1.8rem;
+}

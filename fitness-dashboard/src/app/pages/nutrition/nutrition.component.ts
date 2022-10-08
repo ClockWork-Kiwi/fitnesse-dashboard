@@ -17,7 +17,9 @@ export class NutritionComponent implements OnInit, OnDestroy {
   public removeIcon = faMinusCircle;
   private componentDestruction$ = new Subject();
 
-  public foodItems$ = this.nutritionService.observable$.pipe(
+  public searchingItem = false;
+
+  public userFoodItems$ = this.userNutritionService.observable$.pipe(
     takeUntil(this.componentDestruction$),
     tap(data => {
     })
@@ -37,6 +39,20 @@ export class NutritionComponent implements OnInit, OnDestroy {
     public userService: UserService,
   ) { }
 
+  public searchFoodItem() {
+    this.searchingItem = true;
+    const foodItem = this.mainFormGroup.get('food_name').value;
+    this.foodDataService.getFoodData(foodItem).subscribe(data => {
+      this.searchingItem = false;
+      if (!data) { return; }
+      const servings = this.mainFormGroup.get('servings').value;
+      this.mainFormGroup.get('calories').setValue(data.calories * servings);
+      this.mainFormGroup.get('fat').setValue(data.fat * servings);
+      this.mainFormGroup.get('carbs').setValue(data.carbs * servings);
+      this.mainFormGroup.get('protein').setValue(data.protein * servings);
+    });
+  }
+
   public addFoodItem() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
     const foodItem = this.mainFormGroup.getRawValue();
@@ -48,7 +64,9 @@ export class NutritionComponent implements OnInit, OnDestroy {
   }
 
   public removeFoodItem(itemID) {
-    this.nutritionService.deleteNutritionItem(itemID).subscribe();
+    this.userNutritionService.deleteNutritionItem(itemID).pipe(
+      switchMap(foodItems => this.userService.saveCaloriesConsumed(foodItems)),
+    ).subscribe();
   }
 
   ngOnInit() {}

@@ -3,29 +3,67 @@
     <h2 class="text-secondary">Today I had...</h2>
     <ng-container *ngIf="(foodItems$ | async) as foodItems">
       <ng-container *ngIf="!!foodItems && foodItems.length > 0">
+        <div class="row">
+          <strong class="col-4 text-secondary">Food</strong>
+          <strong class="col-2 text-secondary">Servings</strong>
+          <strong class="col-4 text-secondary">Calories</strong>
+        </div>
         <div class="row mt-2" *ngFor="let foodItem of foodItems; let i = index">
-          <strong class="col-6 text-white">{{foodItem.food_name}}</strong>
-          <strong class="col-4 text-white">{{foodItem.calories}} calorie{{foodItem.calories > 1 ? 's' : ''}}</strong>
+          <strong class="col-4 text-white">{{foodItem.food_name}}</strong>
+          <strong class="col-2 text text-white">{{foodItem.servings}}</strong>
+          <strong class="col-4 text-white">{{foodItem.calories}}</strong>
           <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeFoodItem(foodItem.id)"></fa-icon>
         </div>
       </ng-container>
     </ng-container>
-    <div class="row">
+    <div class="row mt-5">
+      <h5 class="text-secondary">New Food Item</h5>
       <field-text
-        class="col-6"
+        class="col-4 no-y-padding"
         label="Food/Drink"
-        [inputControl]="mainFormGroup | getControl: 'food_name'">
+        [inputControl]="mainFormGroup | getControl: 'food_name'"
+        (blur)="searchFoodItem()">
       </field-text>
       <field-number
-        class="col-4"
+        class="col-2 no-y-padding"
+        label="Servings"
+        [inputControl]="mainFormGroup | getControl: 'servings'">
+      </field-number>
+      <field-number
+        class="col-4 no-y-padding"
         label="Calories"
         [inputControl]="mainFormGroup | getControl: 'calories'">
       </field-number>
-      <fa-icon class="col-2 pt-4 text-secondary" [icon]="addIcon" (click)="addFoodItem()"></fa-icon>
+      <fa-icon *ngIf="!searchingItem" class="col-2 add-icon text-secondary" [icon]="addIcon" (click)="addFoodItem()"></fa-icon>
+      <div class="col-2 pt-4" *ngIf="!!searchingItem">
+        <mat-spinner [diameter]="50" color="accent" class="pt-2"></mat-spinner>
+      </div>
     </div>
+    <mat-expansion-panel class="bg-primary col-10" [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title class="text-secondary">Extra Nutrition Information</mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="row">
+        <field-number
+          class="col-4"
+          label="Protein"
+          [inputControl]="mainFormGroup | getControl: 'protein'">
+        </field-number>
+        <field-number
+          class="col-4"
+          label="Carbohydrates"
+          [inputControl]="mainFormGroup | getControl: 'carbs'">
+        </field-number>
+        <field-number
+          class="col-4"
+          label="Fat"
+          [inputControl]="mainFormGroup | getControl: 'fat'">
+        </field-number>
+      </div>
+    </mat-expansion-panel>
     <ng-container *ngIf="(userService.caloriesConsumed$ | async) as caloriesConsumed">
       <div class="row mt-2">
-        <div class="col-6"></div>
+        <div class="col-8"></div>
         <div class="col-4">
           <strong class="text-white">{{caloriesConsumed > 0 ? caloriesConsumed : 'No'}} Calories Consumed</strong>
         </div>
@@ -33,7 +71,7 @@
     </ng-container>
     <ng-container *ngIf="(userService.caloriesAllowed$ | async) as caloriesAllowed">
       <div class="row mt-2">
-        <div class="col-6"></div>
+        <div class="col-8"></div>
         <div class="col-4">
           <strong class="text-secondary">{{caloriesAllowed}} Left for today!</strong>
         </div>

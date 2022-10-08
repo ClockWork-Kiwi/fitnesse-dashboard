@@ -9,7 +9,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { NumberComponent } from './number/number.component';
 import { TextComponent } from './text/text.component';
 import { SelectComponent } from './select/select.component';
-import {MatAutocompleteModule, MatSelectModule, MatSnackBarModule} from '@angular/material';
+import {MatAutocompleteModule, MatExpansionModule, MatSelectModule, MatSnackBarModule} from '@angular/material';
 
 @NgModule({
   declarations: [
