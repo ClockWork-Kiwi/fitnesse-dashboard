@@ -61,14 +61,22 @@
         </field-number>
       </div>
     </mat-expansion-panel>
-    <ng-container *ngIf="(userService.caloriesConsumed$ | async) as caloriesConsumed">
+    <ng-container *ngIf="(userService.caloriesConsumed$ | async) as caloriesConsumed else noCalories;">
       <div class="row mt-2">
         <div class="col-8"></div>
         <div class="col-4">
-          <strong class="text-white">{{caloriesConsumed > 0 ? caloriesConsumed : 'No'}} Calories Consumed</strong>
+          <strong class="text-white">{{caloriesConsumed}} Calories Consumed</strong>
         </div>
       </div>
     </ng-container>
+    <ng-template #noCalories>
+      <div class="row mt-2">
+        <div class="col-8"></div>
+        <div class="col-4">
+          <strong class="text-white">No Calories Consumed</strong>
+        </div>
+      </div>
+    </ng-template>
     <ng-container *ngIf="(userService.caloriesAllowed$ | async) as caloriesAllowed">
       <div class="row mt-2">
         <div class="col-8"></div>
