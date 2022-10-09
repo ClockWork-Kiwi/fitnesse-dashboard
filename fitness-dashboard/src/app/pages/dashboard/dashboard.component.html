@@ -1,16 +1,19 @@
-<div class="row" style="height: 600px">
-  <div class="col-6">
+<div class="row" style="height: 50%">
+  <div class="col-6 mt-5">
     <canvas id="thisWeekChart"></canvas>
   </div>
-  <div class="col-6">
-    <strong class="mx-auto" style="width:350px; display: block;">WEEK BY WEEK BREAKDOWN</strong>
+  <div class="col-6 d-flex">
+    <strong class="mx-auto">WEEK BY WEEK BREAKDOWN</strong>
   </div>
 </div>
-<div class="row">
-  <div class="col-6">
-    <strong class="mx-auto" style="width:350px; display: block;">CALORIES LEFT IN THE DAY</strong>
+<div class="row" style="height: 50%">
+  <div class="col-6 d-flex">
+    <div class=" mx-auto mt-auto mb-5 text-center">
+    <strong class="text-secondary" style="font-size: 4em;" [countUp]="2000" [duration]="500"></strong>
+    <p class="text-white mx-auto">Calories Left Today</p>
+    </div>
   </div>
-  <div class="col-6">
-    <strong class="mx-auto" style="width:350px; display: block;">WEIGHT OVER TIME GRAPH</strong>
+  <div class="col-6 d-flex">
+    <strong class="mx-auto">WEIGHT OVER TIME GRAPH</strong>
   </div>
 </div>
