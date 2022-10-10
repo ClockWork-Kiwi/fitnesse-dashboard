@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Chart} from 'chart.js';
 
 @Component({
@@ -6,7 +6,11 @@ import {Chart} from 'chart.js';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
+
+  private weekChart;
+  private todayChart;
+  private weightChart;
 
   private dummyWeekData = [
     {
@@ -52,11 +56,40 @@ export class DashboardComponent implements OnInit {
       calories_allowed: 2000,
     },
   ];
+  private dummyWeightData = [
+    {
+      date: '2022-10-03',
+      weight: 91.5,
+    },
+    {
+      date: '2022-10-04',
+      weight: 91.3,
+    },
+    {
+      date: '2022-10-05',
+      weight: 91.3,
+    },
+    {
+      date: '2022-10-06',
+      weight: 91.4,
+    },
+    {
+      date: '2022-10-07',
+      weight: 91.1,
+    },
+    {
+      date: '2022-10-08',
+      weight: 91,
+    },
+    {
+      date: '2022-10-09',
+      weight: 91.1,
+    },
+  ];
 
   constructor() { }
 
   private initWeekGraph() {
-
     const context = document.getElementById('thisWeekChart') as any;
     const consumedData = {
       label: 'Consumed',
@@ -76,27 +109,105 @@ export class DashboardComponent implements OnInit {
       consumedData.data.push(day.calories_consumed);
       burnedData.data.push(day.calories_burned + day.calories_allowed);
     }
-    const weekChart = new Chart(context, {
+    this.weekChart = new Chart(context, {
       type: 'bar',
       data: {
         labels: this.dummyWeekData.map(data => data.date),
         datasets: [consumedData, burnedData],
       },
       options: {
-        scales: {
-          y: {
-            ticks: { color: 'green', beginAtZero: true }
-          },
-          x: {
-            ticks: { color: 'red', beginAtZero: true }
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          labels: {
+            fontColor: 'white',
           }
-        }
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              fontColor: 'white',
+              beginAtZero: true
+            }
+          }],
+          xAxes: [{
+            ticks: {
+              fontColor: 'white',
+              beginAtZero: true
+            }
+          }],
+        },
+      }
+    });
+  }
+
+  private initTodayGraph() {
+    const context = document.getElementById('todayChart') as any;
+    const chartLabels = ['Left Today', 'Consumed'];
+    const todaysData = [{
+      data: [300, 1700],
+      backgroundColor: ['rgba(152, 255, 194, 0.4)', 'rgba(255, 255, 255, 0.4)'],
+    }];
+    const hasBeenDrawn = !!this.todayChart;
+    this.todayChart = new Chart(context, {
+      type: 'doughnut',
+      data: {
+        labels: chartLabels,
+        datasets: todaysData,
+      },
+      options: {
+        legend: { display: false }
+      }
+    });
+  }
+
+  private initWeightGraph() {
+    const context = document.getElementById('weightChart') as any;
+    this.weightChart = new Chart(context, {
+      type: 'line',
+      data: {
+        labels: this.dummyWeightData.map(data => data.date),
+        datasets: [
+          {
+            label: 'Weight',
+            data: this.dummyWeightData.map(data => data.weight),
+            borderColor: 'rgba(152, 255, 194, 0.4)',
+            fill: false,
+            tension: 0.1,
+          }
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          labels: {
+            fontColor: 'white',
+          }
+        },
+        scales: {
+          yAxes: [{
+            ticks: {
+              fontColor: 'white',
+            }
+          }],
+          xAxes: [{
+            ticks: {
+              fontColor: 'white',
+            }
+          }],
+        },
       }
     });
   }
 
   ngOnInit() {
     this.initWeekGraph();
+    this.initTodayGraph();
+    this.initWeightGraph();
+  }
+
+  ngOnDestroy() {
   }
 
 }

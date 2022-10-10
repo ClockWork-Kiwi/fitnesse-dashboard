@@ -8,12 +8,15 @@
 </div>
 <div class="row" style="height: 50%">
   <div class="col-6 d-flex">
-    <div class=" mx-auto mt-auto mb-5 text-center">
-    <strong class="text-secondary" style="font-size: 4em;" [countUp]="2000" [duration]="500"></strong>
-    <p class="text-white mx-auto">Calories Left Today</p>
+    <div id="todayContainer" style="width: 50%">
+      <canvas id="todayChart"></canvas>
+    </div>
+    <div class="text-center my-auto">
+      <strong class="text-secondary" style="font-size: 4em;" [countUp]="300" [duration]="500"></strong>
+      <p class="text-white mx-auto">Calories Left Today</p>
     </div>
   </div>
   <div class="col-6 d-flex">
-    <strong class="mx-auto">WEIGHT OVER TIME GRAPH</strong>
+    <canvas id="weightChart"></canvas>
   </div>
 </div>
