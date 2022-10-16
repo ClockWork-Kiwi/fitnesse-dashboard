@@ -2,25 +2,25 @@
   <h2 class="text-secondary">About Me</h2>
   <field-select
     label="Sex"
-    class="col-2"
+    class="col-3"
     [options]="sexOptions"
     [inputControl]="mainFormGroup | getControl: 'sex'">
   </field-select>
   <field-number
     label="Age"
-    class="col-2"
+    class="col-3"
     [inputControl]="mainFormGroup | getControl: 'age'">
   </field-number>
   <field-number
     label="Height"
     hint="Centimeters"
-    class="col-2"
+    class="col-3"
     [inputControl]="mainFormGroup | getControl: 'height'">
   </field-number>
   <field-number
     label="Weight"
     hint="Kilograms"
-    class="col-2"
+    class="col-3"
     [inputControl]="mainFormGroup | getControl: 'weight'">
   </field-number>
 </div>
@@ -28,19 +28,19 @@
   <h2 class="text-secondary">My Goals</h2>
   <field-select
     label="Weight Goal"
-    class="col-2"
+    class="col-3"
     [options]="weightGoalOptions"
     [inputControl]="mainFormGroup | getControl: 'weight_goal'">
   </field-select>
   <field-select
     label="Diet Plan"
-    class="col-2"
+    class="col-3"
     [options]="dietPlanOptions"
     [inputControl]="mainFormGroup | getControl: 'diet_plan'">
   </field-select>
   <ng-container  *ngIf="(mainFormGroup | getControl: 'calories_allowed').value as caloriesAllowed">
-    <div class="col-4 text-secondary my-auto" *ngIf="!!caloriesAllowed && caloriesAllowed > 0">
-      <h2>Your Daily Caloric Allowance: {{caloriesAllowed}}</h2>
+    <div class="col-6 text-secondary my-auto" *ngIf="!!caloriesAllowed && caloriesAllowed > 0">
+      <strong>Your Daily Caloric Allowance: </strong><strong [countUp]="caloriesAllowed" [duration]="500"></strong>
     </div>
   </ng-container>
 </div>
