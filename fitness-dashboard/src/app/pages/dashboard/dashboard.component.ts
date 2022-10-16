@@ -133,6 +133,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
             fontColor: 'white',
           }
         },
+        title: {
+          display: true,
+          text: 'Last 7 Days',
+          fontColor: 'white',
+          fontSize: 25,
+        },
         scales: {
           yAxes: [{
             ticks: {
