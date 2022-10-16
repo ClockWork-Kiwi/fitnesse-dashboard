@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-8">
+  <div class="col-12">
     <h2 class="text-secondary">Today's Exercise...</h2>
     <ng-container *ngIf="(exerciseService.observable$ | async) as exerciseItems">
       <ng-container *ngIf="!!exerciseItems && exerciseItems.length > 0">
