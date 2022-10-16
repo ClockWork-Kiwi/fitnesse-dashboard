@@ -1,5 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Chart} from 'chart.js';
+import {UserService} from '../../services/user.service';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,6 +10,8 @@ import {Chart} from 'chart.js';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+
+  private componentDestruction$ = new Subject();
 
   private weekChart;
   private todayChart;
@@ -87,9 +92,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor() { }
+  constructor(
+    private userService: UserService,
+  ) { }
 
-  private initWeekGraph() {
+  private initWeekGraph(data) {
     const context = document.getElementById('thisWeekChart') as any;
     const consumedData = {
       label: 'Consumed',
@@ -105,14 +112,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
       borderColor: 'rgba(152, 255, 194, 1)',
       borderWidth: 2,
     };
-    for (const day of this.dummyWeekData) {
+    for (const day of data) {
       consumedData.data.push(day.calories_consumed);
       burnedData.data.push(day.calories_burned + day.calories_allowed);
     }
     this.weekChart = new Chart(context, {
       type: 'bar',
       data: {
-        labels: this.dummyWeekData.map(data => data.date),
+        labels: data.map(e => {
+          if (!e.date) { return 'No Data'; }
+          return new Date(e.date).toDateString();
+        }),
         datasets: [consumedData, burnedData],
       },
       options: {
@@ -178,12 +188,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
         ],
       },
       options: {
-        responsive: true,
         maintainAspectRatio: false,
         legend: {
-          labels: {
-            fontColor: 'white',
-          }
+          display: false,
+        },
+        title: {
+          display: true,
+          text: 'Weight over time',
+          fontColor: 'white',
+          fontSize: 25,
         },
         scales: {
           yAxes: [{
@@ -202,12 +215,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.initWeekGraph();
+    this.userService.userCaloriesWeek$.pipe(
+      takeUntil(this.componentDestruction$),
+    ).subscribe(data => {
+      this.initWeekGraph(data);
+    });
     this.initTodayGraph();
     this.initWeightGraph();
   }
 
   ngOnDestroy() {
+    this.componentDestruction$.next();
   }
 
 }

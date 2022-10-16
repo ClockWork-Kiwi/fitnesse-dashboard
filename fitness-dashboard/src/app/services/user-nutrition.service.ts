@@ -34,7 +34,7 @@ export class UserNutritionService implements OnDestroy {
   }
 
   public saveNutritionItem(item: any) {
-    item.date = new Date();
+    item.date = new Date().toISOString().split('T')[0];
     return this.userService.userId$.pipe(
       filter(userID => !!userID),
       take(1),
