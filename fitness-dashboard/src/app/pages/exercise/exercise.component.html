@@ -1,43 +1,47 @@
-<div class="row">
-  <div class="col-12">
-    <h2 class="text-secondary">Today's Exercise...</h2>
-    <ng-container *ngIf="(exerciseService.observable$ | async) as exerciseItems">
-      <ng-container *ngIf="!!exerciseItems && exerciseItems.length > 0">
-        <div class="row mt-4 text-white" *ngFor="let exerciseItem of exerciseItems; let i = index">
-          <strong class="col-6">{{exerciseItem.exercise_name}}</strong>
-          <strong class="col-2">{{exerciseItem.duration}} minute{{exerciseItem.duration > 1 ? 's' : ''}}</strong>
-          <strong class="col-2">{{exerciseItem.calories}} calorie{{exerciseItem.calories > 1 ? 's' : ''}}</strong>
-          <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeExerciseItem(exerciseItem.id)"></fa-icon>
-        </div>
-    </ng-container>
-    </ng-container>
-    <div class="row">
-      <field-text
-        class="col-6"
-        [options]="exerciseOptions"
-        label="Exercise"
-        [inputControl]="mainFormGroup | getControl: 'exercise_name'">
-      </field-text>
-      <field-number
-        class="col-2"
-        hint="Minutes"
-        label="Duration"
-        [inputControl]="mainFormGroup | getControl: 'duration'">
-      </field-number>
-      <field-number
-        class="col-2"
-        label="Calories"
-        [inputControl]="mainFormGroup | getControl: 'calories'">
-      </field-number>
-      <fa-icon class="col-2 pt-4 text-secondary" [icon]="addIcon" (click)="addExerciseItem()"></fa-icon>
+<h2 class="text-secondary">Today's Exercise...</h2>
+<ng-container *ngIf="(exerciseService.observable$ | async) as exerciseItems">
+  <ng-container *ngIf="!!exerciseItems && exerciseItems.length > 0">
+    <div class="row mt-4 text-white" *ngFor="let exerciseItem of exerciseItems; let i = index">
+      <strong class="col-6">{{exerciseItem.exercise_name}}</strong>
+      <strong class="col-2">{{exerciseItem.duration}} minute{{exerciseItem.duration > 1 ? 's' : ''}}</strong>
+      <strong class="col-2">{{exerciseItem.calories}} calorie{{exerciseItem.calories > 1 ? 's' : ''}}</strong>
+      <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeExerciseItem(exerciseItem.id)"></fa-icon>
     </div>
-    <ng-container *ngIf="(userService.caloriesBurned$ | async) as caloriesBurnedToday">
-      <div class="row mt-2">
-        <div class="col-8"></div>
-        <div class="col-4 text-secondary">
-          <strong>{{caloriesBurnedToday > 0 ? '+' + caloriesBurnedToday : 'No'}} Extra Calories Burned Today</strong>
-        </div>
-      </div>
-    </ng-container>
-  </div>
+</ng-container>
+</ng-container>
+<div class="row">
+  <field-text
+    class="col-6"
+    [options]="exerciseOptions"
+    label="Exercise"
+    [inputControl]="mainFormGroup | getControl: 'exercise_name'">
+  </field-text>
+  <field-number
+    class="col-2"
+    hint="Minutes"
+    label="Duration"
+    [inputControl]="mainFormGroup | getControl: 'duration'">
+  </field-number>
+  <field-number
+    class="col-2"
+    label="Calories"
+    [inputControl]="mainFormGroup | getControl: 'calories'">
+  </field-number>
+  <fa-icon class="col-2 pt-4 text-secondary" [icon]="addIcon" (click)="addExerciseItem()"></fa-icon>
 </div>
+<ng-container *ngIf="(userService.caloriesBurned$ | async) as caloriesBurnedToday; else noneBurned">
+  <div class="row mt-2">
+    <div class="col-8"></div>
+    <div class="col-4 text-secondary">
+      <strong>{{caloriesBurnedToday}} Extra Calories Burned Today</strong>
+    </div>
+  </div>
+</ng-container>
+<ng-template #noneBurned>
+  <div class="row mt-2">
+    <div class="col-8"></div>
+    <div class="col-4 text-secondary">
+      <strong>No Extra Calories Burned Today</strong>
+    </div>
+  </div>
+</ng-template>
