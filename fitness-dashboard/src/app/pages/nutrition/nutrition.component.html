@@ -81,7 +81,7 @@
       <div class="row mt-2">
         <div class="col-8"></div>
         <div class="col-4">
-          <strong style="white-space: nowrap" class="text-secondary">{{caloriesAllowed}} Left for today!</strong>
+          <strong style="white-space: nowrap" [class]="caloriesAllowed > 0 ? 'text-secondary' : 'text-danger'">{{caloriesAllowed}} {{ caloriesAllowed > 0 ? 'Left for today!' : 'Over Allowance!'}}</strong>
         </div>
       </div>
     </ng-container>
