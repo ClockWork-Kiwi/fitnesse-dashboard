@@ -18,6 +18,7 @@ import { NutritionComponent } from './pages/nutrition/nutrition.component';
 import { ExerciseComponent } from './pages/exercise/exercise.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {HttpClientModule} from '@angular/common/http';
+import { CountUpDirective } from './directives/count-up.directive';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {HttpClientModule} from '@angular/common/http';
     GoalsComponent,
     NutritionComponent,
     ExerciseComponent,
+    CountUpDirective,
   ],
   imports: [
     BrowserModule,
