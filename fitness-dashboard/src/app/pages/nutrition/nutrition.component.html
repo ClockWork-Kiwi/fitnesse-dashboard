@@ -64,8 +64,8 @@
     <ng-container *ngIf="(userService.caloriesConsumed$ | async) as caloriesConsumed; else noneConsumed">
       <div class="row mt-2">
         <div class="col-8"></div>
-        <div class="col-4">
-          <strong style="white-space: nowrap" class="text-white">{{caloriesConsumed}} Calories Consumed</strong>
+        <div class="col-4 text-white" style="white-space: nowrap">
+          <strong [countUp]="caloriesConsumed" [duration]="500"></strong><strong> Calories Consumed</strong>
         </div>
       </div>
     </ng-container>
@@ -80,8 +80,8 @@
     <ng-container *ngIf="(userService.caloriesLeft$ | async) as caloriesAllowed">
       <div class="row mt-2">
         <div class="col-8"></div>
-        <div class="col-4">
-          <strong style="white-space: nowrap" [class]="caloriesAllowed > 0 ? 'text-secondary' : 'text-danger'">{{caloriesAllowed}} {{ caloriesAllowed > 0 ? 'Left for today!' : 'Over Allowance!'}}</strong>
+        <div class="col-4" [ngClass]="caloriesAllowed > 0 ? 'text-secondary' : 'text-danger'">
+          <strong [countUp]="caloriesAllowed" [duration]="500"></strong><strong> {{ caloriesAllowed > 0 ? 'Left for today!' : 'Over Allowance!'}}</strong>
         </div>
       </div>
     </ng-container>
