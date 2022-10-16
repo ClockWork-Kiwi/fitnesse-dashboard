@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Chart} from 'chart.js';
 import {UserService} from '../../services/user.service';
 import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {filter, takeUntil} from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -157,14 +157,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  private initTodayGraph() {
+  private initTodayGraph(data) {
     const context = document.getElementById('todayChart') as any;
     const chartLabels = ['Left Today', 'Consumed'];
+    const caloriesLeft = data.calories_allowed + data.calories_burned - data.calories_consumed;
+    const caloriesConsumed = data.calories_consumed;
     const todaysData = [{
-      data: [300, 1700],
-      backgroundColor: ['rgba(152, 255, 194, 0.4)', 'rgba(255, 255, 255, 0.4)'],
+      data: [caloriesLeft > 0 ? caloriesLeft : 0, caloriesConsumed],
+      backgroundColor: ['rgba(152, 255, 194, 0.4)', caloriesLeft >= 0 ? 'rgba(255, 255, 255, 0.4)' : 'rgba(255, 131, 131, 0.4)'],
     }];
-    const hasBeenDrawn = !!this.todayChart;
     this.todayChart = new Chart(context, {
       type: 'doughnut',
       data: {
@@ -172,7 +173,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         datasets: todaysData,
       },
       options: {
-        legend: { display: false }
+        legend: { display: false },
       }
     });
   }
@@ -182,7 +183,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.weightChart = new Chart(context, {
       type: 'line',
       data: {
-        labels: this.dummyWeightData.map(data => data.date),
+        labels: this.dummyWeightData.map(data => new Date(data.date).toISOString().split('T')[0]),
         datasets: [
           {
             label: 'Weight',
@@ -223,10 +224,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userService.userCaloriesWeek$.pipe(
       takeUntil(this.componentDestruction$),
+      filter(data => !!data && data.length > 0),
     ).subscribe(data => {
       this.initWeekGraph(data);
+      this.initTodayGraph(data[6]);
     });
-    this.initTodayGraph();
     this.initWeightGraph();
   }
 

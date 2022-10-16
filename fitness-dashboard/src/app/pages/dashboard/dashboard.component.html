@@ -11,9 +11,9 @@
     <div id="todayContainer" class="my-auto" style="width: 50%">
       <canvas id="todayChart"></canvas>
     </div>
-    <div class="text-center my-auto">
-      <strong class="text-secondary" style="font-size: 4em;" [countUp]="300" [duration]="500"></strong>
-      <p class="text-white mx-auto">Calories Left Today</p>
+    <div class="text-center my-auto" *ngIf="(userService.caloriesLeft$ | async) as caloriesAllowed">
+      <strong [class]="caloriesAllowed >= 0 ? 'text-secondary' : 'text-danger'" style="font-size: 4em;" [countUp]="caloriesAllowed >= 0 ? caloriesAllowed : caloriesAllowed * -1" [duration]="500"></strong>
+      <p class="text-white mx-auto">{{caloriesAllowed >= 0 ? 'Calories Left Today' : 'Calories Over allowance'}}</p>
     </div>
   </div>
   <div class="col-6 d-flex">
