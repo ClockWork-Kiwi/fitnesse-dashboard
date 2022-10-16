@@ -17,8 +17,11 @@ export class UserService implements OnDestroy {
   private subject$ = new BehaviorSubject(this.store);
   public observable$ = this.subject$.pipe() as Observable<any>;
 
-  public userCaloriesWeek = [];
+  private userCaloriesWeek = [];
   public userCaloriesWeek$ = new BehaviorSubject(this.userCaloriesWeek);
+
+  private userWeight = [];
+  public userWeight$ = new BehaviorSubject(this.userWeight);
 
   private caloriesConsumed = 0;
   public caloriesConsumed$ = new BehaviorSubject(this.caloriesConsumed);
@@ -44,6 +47,7 @@ export class UserService implements OnDestroy {
     ).subscribe(userID => {
       this.getUserData(userID);
       this.getUserCalories(userID);
+      this.getUserWeight(userID);
     });
   }
 
@@ -65,6 +69,14 @@ export class UserService implements OnDestroy {
       this.caloriesConsumed$.next(this.caloriesConsumed);
       this.caloriesBurned = userCalories[6].calories_burned || 0;
       this.caloriesBurned$.next(this.caloriesBurned);
+    });
+  }
+
+  public getUserWeight(userID) {
+    this.http.get(`api/user/${userID}/weight`).subscribe((userWeight: any) => {
+      if (!userWeight) { return; }
+      this.userWeight = userWeight;
+      this.userWeight$.next(this.userWeight);
     });
   }
 

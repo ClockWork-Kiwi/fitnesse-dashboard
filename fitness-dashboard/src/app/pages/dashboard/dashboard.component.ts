@@ -17,50 +17,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private todayChart;
   private weightChart;
 
-  private dummyWeekData = [
-    {
-      date: '2022-10-03',
-      calories_consumed: 2000,
-      calories_burned: 250,
-      calories_allowed: 2000,
-    },
-    {
-      date: '2022-10-04',
-      calories_consumed: 1800,
-      calories_burned: 500,
-      calories_allowed: 2000,
-    },
-    {
-      date: '2022-10-05',
-      calories_consumed: 2300,
-      calories_burned: 0,
-      calories_allowed: 2000,
-    },
-    {
-      date: '2022-10-06',
-      calories_consumed: 1500,
-      calories_burned: 1000,
-      calories_allowed: 2000,
-    },
-    {
-      date: '2022-10-07',
-      calories_consumed: 3000,
-      calories_burned: 0,
-      calories_allowed: 2000,
-    },
-    {
-      date: '2022-10-08',
-      calories_consumed: 2100,
-      calories_burned: 100,
-      calories_allowed: 2000,
-    },
-    {
-      date: '2022-10-09',
-      calories_consumed: 2000,
-      calories_burned: 250,
-      calories_allowed: 2000,
-    },
-  ];
   private dummyWeightData = [
     {
       date: '2022-10-03',
@@ -93,7 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private userService: UserService,
+    public userService: UserService,
   ) { }
 
   private initWeekGraph(data) {
@@ -178,16 +134,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  private initWeightGraph() {
+  private initWeightGraph(data) {
     const context = document.getElementById('weightChart') as any;
     this.weightChart = new Chart(context, {
       type: 'line',
       data: {
-        labels: this.dummyWeightData.map(data => new Date(data.date).toISOString().split('T')[0]),
+        labels: data.map(e => new Date(e.date).toISOString().split('T')[0]),
         datasets: [
           {
             label: 'Weight',
-            data: this.dummyWeightData.map(data => data.weight),
+            data: data.map(e => e.weight),
             borderColor: 'rgba(152, 255, 194, 0.4)',
             fill: false,
             tension: 0.1,
@@ -229,7 +185,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.initWeekGraph(data);
       this.initTodayGraph(data[6]);
     });
-    this.initWeightGraph();
+    this.userService.userWeight$.pipe(
+      takeUntil(this.componentDestruction$),
+      filter(data => !!data && data.length > 0),
+    ).subscribe(data => {
+      this.initWeightGraph(data);
+    });
   }
 
   ngOnDestroy() {
