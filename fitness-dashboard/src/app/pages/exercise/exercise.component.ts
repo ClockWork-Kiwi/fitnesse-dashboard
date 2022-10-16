@@ -236,7 +236,9 @@ export class ExerciseComponent implements OnInit, OnDestroy {
   }
 
   public removeExerciseItem(itemID) {
-    this.exerciseService.deleteExerciseItem(itemID).subscribe();
+    this.exerciseService.deleteExerciseItem(itemID).pipe(
+      switchMap(exerciseItems => this.userService.saveCaloriesBurned(exerciseItems)),
+    ).subscribe();
   }
 
   ngOnInit() {
