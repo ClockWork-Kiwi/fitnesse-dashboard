@@ -33,7 +33,7 @@
   <div class="row mt-2">
     <div class="col-8"></div>
     <div class="col-4 text-secondary">
-      <strong>{{caloriesBurnedToday}} Extra Calories Burned Today</strong>
+      <strong [countUp]="caloriesBurnedToday" [duration]="500"></strong><strong> Extra Calories Burned Today</strong>
     </div>
   </div>
 </ng-container>
