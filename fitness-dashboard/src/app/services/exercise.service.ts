@@ -3,6 +3,7 @@ import {BehaviorSubject, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {UserService} from './user.service';
 import {filter, switchMap, take, takeUntil, tap} from 'rxjs/operators';
+import {formatDate} from '../functions/formatDate';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class ExerciseService implements OnDestroy {
   }
 
   public saveExerciseItem(item: any) {
-    item.date = new Date().toISOString().split('T')[0];
+    item.date = formatDate();
     return this.userService.userId$.pipe(
       filter(userID => !!userID),
       take(1),

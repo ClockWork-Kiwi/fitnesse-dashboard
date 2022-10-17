@@ -7,7 +7,7 @@ import { ExerciseComponent } from './pages/exercise/exercise.component';
 
 
 const routes: Routes = [
-  { path: '', component: GoalsComponent }, // Change this path to login screen later, for now dashboard is base screen
+  { path: '', component: DashboardComponent }, // Change this path to login screen later, for now dashboard is base screen
   { path: 'dashboard', component: DashboardComponent },
   { path: 'goals', component: GoalsComponent },
   { path: 'nutrition', component: NutritionComponent },

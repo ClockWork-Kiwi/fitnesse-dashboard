@@ -1,7 +1,8 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {BehaviorSubject, combineLatest, Observable, of, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, EMPTY, Observable, of, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {filter, map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {formatDate} from '../functions/formatDate';
 
 @Injectable({
   providedIn: 'root'
@@ -59,15 +60,35 @@ export class UserService implements OnDestroy {
   }
 
   public getUserCalories(userID) {
-    this.http.get(`api/user/${userID}/calories`).subscribe((userCalories: any) => {
-      if (!userCalories) { return; }
-      this.userCaloriesWeek = userCalories;
+    this.http.get(`api/user/${userID}/calories`).pipe(
+      switchMap((userCalories: any) => {
+        this.userCaloriesWeek = userCalories;
+        this.userCaloriesWeek$.next(this.userCaloriesWeek);
+        let todaysData = userCalories[6];
+        if (!todaysData.id) {
+          todaysData = {
+            uid: userID,
+            date: formatDate(),
+            calories_consumed: 0,
+            calories_burned: 0,
+            calories_allowed: this.store.calories_allowed,
+          };
+          return this.http.patch(`api/user/${userID}/calories`, todaysData);
+        } else {
+          this.caloriesConsumed = todaysData.calories_consumed;
+          this.caloriesConsumed$.next(this.caloriesConsumed);
+          this.caloriesBurned = todaysData.calories_burned;
+          this.caloriesBurned$.next(this.caloriesBurned);
+          return EMPTY;
+        }
+      }),
+      filter(todaysData => !!todaysData),
+    ).subscribe(todaysData => {
+      this.userCaloriesWeek[6] = todaysData;
       this.userCaloriesWeek$.next(this.userCaloriesWeek);
-      const todaysData = userCalories[6];
-      if (!todaysData.id) { return; }
-      this.caloriesConsumed = userCalories[6].calories_consumed || 0;
+      this.caloriesConsumed = 0;
       this.caloriesConsumed$.next(this.caloriesConsumed);
-      this.caloriesBurned = userCalories[6].calories_burned || 0;
+      this.caloriesBurned = 0;
       this.caloriesBurned$.next(this.caloriesBurned);
     });
   }
@@ -91,7 +112,7 @@ export class UserService implements OnDestroy {
 
   public saveCaloriesConsumed(foodItems) {
     const toSave = {
-      date: new Date().toISOString().split('T')[0],
+      date: formatDate(),
       calories_consumed: 0,
       calories_allowed: this.store.calories_allowed,
     };
@@ -111,7 +132,7 @@ export class UserService implements OnDestroy {
 
   public saveCaloriesBurned(exerciseItems) {
     const toSave = {
-      date: new Date().toISOString().split('T')[0],
+      date: formatDate(),
       calories_burned: 0,
       calories_allowed: this.store.calories_allowed,
     };

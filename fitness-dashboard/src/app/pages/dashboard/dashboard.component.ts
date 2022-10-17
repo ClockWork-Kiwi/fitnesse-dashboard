@@ -3,6 +3,7 @@ import {Chart} from 'chart.js';
 import {UserService} from '../../services/user.service';
 import {Subject} from 'rxjs';
 import {filter, takeUntil} from 'rxjs/operators';
+import {formatDate} from '../../functions/formatDate';
 
 @Component({
   selector: 'app-dashboard',
@@ -139,7 +140,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.weightChart = new Chart(context, {
       type: 'line',
       data: {
-        labels: data.map(e => new Date(e.date).toISOString().split('T')[0]),
+        labels: data.map(e => formatDate(new Date(e))),
         datasets: [
           {
             label: 'Weight',
