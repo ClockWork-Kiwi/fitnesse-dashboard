@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {of, Subject} from 'rxjs';
+import {switchMap, takeUntil, tap} from 'rxjs/operators';
 import {FitnessCalculatorService} from '../../services/fitness-calculator.service';
 import {UserService} from '../../services/user.service';
 import {MatSnackBar} from '@angular/material';
@@ -87,19 +87,29 @@ export class GoalsComponent implements OnInit, OnDestroy {
 
   public saveUserDetails() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
-    this.userService.saveUserData(this.mainFormGroup.getRawValue()).subscribe(data => {
-      if (!!data) {
-        this.snackBar.open(
-          'Saved Successfully!',
-          'Dismiss',
-          {
-            duration: 100000,
-            horizontalPosition: 'center',
-            verticalPosition: 'top',
-            panelClass: 'panel-success',
-          });
-        this.mainFormGroup.markAsPristine();
-      }
+    this.userService.saveUserData(this.mainFormGroup.getRawValue()).pipe(
+      tap(data => {
+        if (!!data) {
+          this.snackBar.open(
+            'Saved Successfully!',
+            'Dismiss',
+            {
+              duration: 2000,
+              horizontalPosition: 'center',
+              verticalPosition: 'top',
+              panelClass: 'panel-success',
+            });
+        }
+      }),
+      switchMap(() => this.userService.saveCaloriesAllowed(this.mainFormGroup.get('calories_allowed').value)),
+      switchMap(() => {
+        if (this.mainFormGroup.get('weight').dirty) {
+          return this.userService.saveUserWeight(this.mainFormGroup.get('id').value, this.mainFormGroup.get('weight').value);
+        }
+        return of(undefined);
+      }),
+    ).subscribe(() => {
+      this.mainFormGroup.markAsPristine();
     });
   }
 

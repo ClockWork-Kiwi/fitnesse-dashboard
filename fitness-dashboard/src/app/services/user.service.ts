@@ -23,8 +23,8 @@ export class UserService implements OnDestroy {
   private allUserCalories = [];
   public allUserCalories$ = new BehaviorSubject(this.allUserCalories);
 
-  private userWeight = [];
-  public userWeight$ = new BehaviorSubject(this.userWeight);
+  private userWeightOverTime = [];
+  public userWeightOverTime$ = new BehaviorSubject(this.userWeightOverTime);
 
   private caloriesConsumed = 0;
   public caloriesConsumed$ = new BehaviorSubject(this.caloriesConsumed);
@@ -104,11 +104,26 @@ export class UserService implements OnDestroy {
   }
 
   public getUserWeight(userID) {
-    this.http.get(`api/user/${userID}/weight`).subscribe((userWeight: any) => {
-      if (!userWeight) { return; }
-      this.userWeight = userWeight;
-      this.userWeight$.next(this.userWeight);
+    this.http.get(`api/user/${userID}/weight`).subscribe((userWeightOverTime: any) => {
+      if (!userWeightOverTime) { return; }
+      this.userWeightOverTime = userWeightOverTime;
+      this.userWeightOverTime$.next(this.userWeightOverTime);
     });
+  }
+
+  public saveUserWeight(userID, userWeight) {
+    return this.http.patch(`api/user/${userID}/weight`, { weight: userWeight, date: formatDate() }).pipe(
+      tap(data => {
+        const mostRecentDate = new Date(this.userWeightOverTime[this.userWeightOverTime.length - 1].date);
+        const today = new Date();
+        if (today.getDate() === mostRecentDate.getDate() && today.getMonth() === mostRecentDate.getMonth() && today.getFullYear() === mostRecentDate.getFullYear()) {
+          this.userWeightOverTime[this.userWeightOverTime.length - 1] = data;
+        } else {
+          this.userWeightOverTime.push(data);
+        }
+        this.userWeightOverTime$.next(this.userWeightOverTime);
+      })
+    );
   }
 
   public saveUserData(userData: any) {
@@ -117,6 +132,24 @@ export class UserService implements OnDestroy {
         this.user = data;
         this.user$.next(this.user);
       }),
+    );
+  }
+
+  public saveCaloriesAllowed(caloriesAllowed) {
+    const toSave = {
+      date: formatDate(),
+      calories_allowed: caloriesAllowed,
+    };
+    return this.userId$.pipe(
+      switchMap(userID => this.http.patch(`api/user/${userID}/calories`, toSave)),
+      tap((data: any) => {
+        this.allUserCalories[this.allUserCalories.length - 1] = data;
+        this.allUserCalories$.next(this.allUserCalories);
+        this.userCaloriesWeek[6] = data;
+        this.userCaloriesWeek$.next(this.userCaloriesWeek);
+        this.caloriesConsumed = data.calories_consumed;
+        this.caloriesConsumed$.next(this.caloriesConsumed);
+      })
     );
   }
 

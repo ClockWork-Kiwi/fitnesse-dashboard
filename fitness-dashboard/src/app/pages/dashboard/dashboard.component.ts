@@ -158,7 +158,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.initTodayGraph(data[6]);
     });
 
-    this.userService.userWeight$.pipe(
+    this.userService.userWeightOverTime$.pipe(
       takeUntil(this.componentDestruction$),
       filter(data => !!data && data.length > 0),
     ).subscribe(data => {
