@@ -3,7 +3,6 @@ import {Chart} from 'chart.js';
 import {UserService} from '../../services/user.service';
 import {Subject} from 'rxjs';
 import {filter, map, takeUntil} from 'rxjs/operators';
-import {formatDate} from '../../functions/formatDate';
 
 @Component({
   selector: 'app-dashboard',

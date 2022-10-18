@@ -46,14 +46,6 @@ export class GoalsComponent implements OnInit, OnDestroy {
     { value: 4, label: 'Low Fat' },
   ];
 
-  private dietPlanMap = {
-    0: 'balancedDietPlan ',
-    1: 'lowCarbDietPlan ',
-    2: 'highCarbDietPlan ',
-    3: 'highProteinDietPlan ',
-    4: 'lowFatDietPlan ',
-  };
-
   public mainFormGroup = this.fb.group({
     id: [null],
     sex: [null, Validators.required],
