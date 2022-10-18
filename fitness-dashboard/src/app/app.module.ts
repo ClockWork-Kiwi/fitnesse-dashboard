@@ -13,7 +13,14 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {PipesModule} from './pipes/pipes.module';
-import {MatButtonModule, MatCardModule, MatExpansionModule, MatProgressSpinnerModule, MatSidenavModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatExpansionModule,
+  MatProgressSpinnerModule,
+  MatSidenavModule,
+  MatTooltipModule
+} from '@angular/material';
 import { NutritionComponent } from './pages/nutrition/nutrition.component';
 import { ExerciseComponent } from './pages/exercise/exercise.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
@@ -53,6 +60,7 @@ import { RegisterComponent } from './pages/register/register.component';
     MatExpansionModule,
     MatCardModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

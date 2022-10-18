@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faCircleInfo, faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {filter, map, switchMap, takeUntil} from 'rxjs/operators';
@@ -8,6 +8,7 @@ import {UserService} from '../../services/user.service';
 import {FoodDataService} from '../../services/food-data.service';
 import {Chart} from 'chart.js';
 import {FitnessCalculatorService} from '../../services/fitness-calculator.service';
+import {roundNumber} from '../../functions/roundNumber';
 
 @Component({
   selector: 'app-nutrition',
@@ -18,6 +19,7 @@ export class NutritionComponent implements OnInit, OnDestroy {
 
   public addIcon = faPlusCircle;
   public removeIcon = faMinusCircle;
+  public infoIcon = faCircleInfo;
   private componentDestruction$ = new Subject();
 
   public searchingItem = false;
@@ -65,6 +67,7 @@ export class NutritionComponent implements OnInit, OnDestroy {
   public addFoodItem() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
     const foodItem = this.mainFormGroup.getRawValue();
+    foodItem.servings = Number(foodItem.servings);
     this.userNutritionService.saveNutritionItem(foodItem).pipe(
       switchMap(foodItems => this.userService.saveCaloriesConsumed(foodItems)),
     ).subscribe(() => {
@@ -95,13 +98,13 @@ export class NutritionComponent implements OnInit, OnDestroy {
         totalProtein += item.protein;
       }
     }
-    setTimeout(() => {
-      if (totalFat > 0 || totalCarbs > 0 || totalProtein > 0) {
-        this.showDietGraph = true;
+    if (totalFat > 0 || totalCarbs > 0 || totalProtein > 0) {
+      this.showDietGraph = true;
+      setTimeout(() => {
         const totalNutrition = totalFat + totalCarbs + totalProtein;
-        const percentageFat = (totalFat / totalNutrition * 100).toFixed(2);
-        const percentageCarbs = (totalCarbs / totalNutrition * 100).toFixed(2);
-        const percentageProtein = (totalProtein / totalNutrition * 100).toFixed(2);
+        const percentageFat = roundNumber(totalFat / totalNutrition * 100);
+        const percentageCarbs = roundNumber(totalCarbs / totalNutrition * 100);
+        const percentageProtein = roundNumber(totalProtein / totalNutrition * 100);
         const context = document.getElementById('myDietChart');
         const chartLabels = ['Fat', 'Carbs', 'Protein'];
         const chartData = [{
@@ -129,8 +132,8 @@ export class NutritionComponent implements OnInit, OnDestroy {
             },
           },
         });
-      }
-    }, 0);
+      }, 0);
+    }
   }
 
   public initMyPlanChart(fatPercentage, carbsPercentage, proteinPercentage) {
@@ -202,9 +205,9 @@ export class NutritionComponent implements OnInit, OnDestroy {
         weightGoalMap[userData.weight_goal]
       )[dietPlanMap[userData.diet_plan]];
       const totalNutrition = idealNutrition.fat + idealNutrition.carb + idealNutrition.protein;
-      const idealFatPercentage = (idealNutrition.fat / totalNutrition * 100).toFixed(2);
-      const idealCarbsPercentage = (idealNutrition.carb / totalNutrition * 100).toFixed(2);
-      const idealProteinPercentage = (idealNutrition.protein / totalNutrition * 100).toFixed(2);
+      const idealFatPercentage = roundNumber(idealNutrition.fat / totalNutrition * 100);
+      const idealCarbsPercentage = roundNumber(idealNutrition.carb / totalNutrition * 100);
+      const idealProteinPercentage = roundNumber(idealNutrition.protein / totalNutrition * 100);
       this.userDietPlan = dietPlanOptions.find(plan => plan.value === userData.diet_plan).label;
       this.initMyPlanChart(idealFatPercentage, idealCarbsPercentage, idealProteinPercentage);
     });
@@ -214,10 +217,10 @@ export class NutritionComponent implements OnInit, OnDestroy {
       filter(() => this.mainFormGroup.dirty),
     ).subscribe(servings => {
       if (!this.foundItem) { return; }
-      this.mainFormGroup.get('calories').setValue(this.foundItem.calories * servings);
-      this.mainFormGroup.get('fat').setValue(this.foundItem.fat * servings);
-      this.mainFormGroup.get('carbs').setValue(this.foundItem.carbs * servings);
-      this.mainFormGroup.get('protein').setValue(this.foundItem.protein * servings);
+      this.mainFormGroup.get('calories').setValue(roundNumber(this.foundItem.calories * servings));
+      this.mainFormGroup.get('fat').setValue(roundNumber(this.foundItem.fat * servings));
+      this.mainFormGroup.get('carbs').setValue(roundNumber(this.foundItem.carbs * servings));
+      this.mainFormGroup.get('protein').setValue(roundNumber(this.foundItem.protein * servings));
     });
   }
 

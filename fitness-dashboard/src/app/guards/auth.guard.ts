@@ -22,9 +22,7 @@ export class AuthGuard implements CanActivate {
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.userService.verify().pipe(
       catchError(err => {
-        if (err.status === 401 && err.error.error.name === 'TokenExpiredError') {
-          this.routeToLogin();
-        }
+        this.routeToLogin();
         return EMPTY;
       }),
       map(verified => {
