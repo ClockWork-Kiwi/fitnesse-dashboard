@@ -1,9 +1,14 @@
 <div class="row" style="height: 50%">
-  <div class="col-6 mt-5">
+  <div class="col-6" style="height: 100%">
     <canvas id="thisWeekChart"></canvas>
   </div>
-  <div class="col-6 d-flex">
-    <strong class="mx-auto">WEEK BY WEEK BREAKDOWN</strong>
+  <div class="col-6 d-flex" style="height: 100%">
+    <div class="ms-auto me-2 mt-3" style="width: 70%" *ngIf="(dailyCalories$ | async) as dailyCalories">
+      <h4 class="text-white">Daily Calorie History:</h4>
+      <ul class="ps-0 calorieList">
+        <span *ngFor="let calorieDay of dailyCalories" [innerHTML]="calorieDay"></span>
+      </ul>
+    </div>
   </div>
 </div>
 <div class="row" style="height: 50%">

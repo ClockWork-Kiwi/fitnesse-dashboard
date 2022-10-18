@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Chart} from 'chart.js';
 import {UserService} from '../../services/user.service';
 import {Subject} from 'rxjs';
-import {filter, takeUntil} from 'rxjs/operators';
+import {filter, map, takeUntil} from 'rxjs/operators';
 import {formatDate} from '../../functions/formatDate';
 
 @Component({
@@ -18,36 +18,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private todayChart;
   private weightChart;
 
-  private dummyWeightData = [
-    {
-      date: '2022-10-03',
-      weight: 91.5,
-    },
-    {
-      date: '2022-10-04',
-      weight: 91.3,
-    },
-    {
-      date: '2022-10-05',
-      weight: 91.3,
-    },
-    {
-      date: '2022-10-06',
-      weight: 91.4,
-    },
-    {
-      date: '2022-10-07',
-      weight: 91.1,
-    },
-    {
-      date: '2022-10-08',
-      weight: 91,
-    },
-    {
-      date: '2022-10-09',
-      weight: 91.1,
-    },
-  ];
+  public dailyCalories$;
 
   constructor(
     public userService: UserService,
@@ -140,7 +111,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.weightChart = new Chart(context, {
       type: 'line',
       data: {
-        labels: data.map(e => formatDate(new Date(e))),
+        labels: data.map(e => new Date(e.date).toDateString()),
         datasets: [
           {
             label: 'Weight',
@@ -158,7 +129,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         },
         title: {
           display: true,
-          text: 'Weight over time',
+          text: 'Weight over Time',
           fontColor: 'white',
           fontSize: 25,
         },
@@ -186,12 +157,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.initWeekGraph(data);
       this.initTodayGraph(data[6]);
     });
+
     this.userService.userWeight$.pipe(
       takeUntil(this.componentDestruction$),
       filter(data => !!data && data.length > 0),
     ).subscribe(data => {
       this.initWeightGraph(data);
     });
+
+    this.dailyCalories$ = this.userService.allUserCalories$.pipe(
+      takeUntil(this.componentDestruction$),
+      map(data => {
+        console.log(data);
+        if (!data || data.length === 0) { return []; }
+        return data.map(row => {
+          let dateString = new Date(row.date).toDateString();
+          if (dateString === new Date().toDateString()) { dateString = 'Today'; }
+          const calorieDifference = row.calories_allowed + row.calories_burned - row.calories_consumed;
+          let calorieString;
+          let textClass;
+          if (calorieDifference > 0) {
+            calorieString = calorieDifference + ' Under Target';
+            textClass = 'text-secondary';
+          } else if (calorieDifference === 0) {
+            calorieString = ' Target Exactly Met';
+            textClass = 'text-white';
+          } else {
+            calorieString = (calorieDifference * -1) + ' Over Target';
+            textClass = 'text-danger';
+          }
+          return `<li class="ps-0 pe-3 py-1 d-flex ${textClass}">${dateString}<span class="ms-auto">${calorieString}</span></li>`;
+        });
+      }),
+    );
   }
 
   ngOnDestroy() {

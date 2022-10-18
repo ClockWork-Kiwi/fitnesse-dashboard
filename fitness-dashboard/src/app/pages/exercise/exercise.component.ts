@@ -17,7 +17,7 @@ export class ExerciseComponent implements OnInit, OnDestroy {
   public removeIcon = faMinusCircle;
   public exerciseOptions = [];
   // Hard coded value- it must be replaced by value from database later
-  private userWeight$ = this.userService.observable$.pipe(
+  private userWeight$ = this.userService.user$.pipe(
     map(userData => userData.weight)
   );
 

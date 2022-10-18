@@ -14,12 +14,14 @@ export class UserService implements OnDestroy {
 
   private destruction$ = new Subject();
 
-  private store = {} as any;
-  private subject$ = new BehaviorSubject(this.store);
-  public observable$ = this.subject$.pipe() as Observable<any>;
+  private user = {} as any;
+  public user$ = new BehaviorSubject(this.user);
 
   private userCaloriesWeek = [];
   public userCaloriesWeek$ = new BehaviorSubject(this.userCaloriesWeek);
+
+  private allUserCalories = [];
+  public allUserCalories$ = new BehaviorSubject(this.allUserCalories);
 
   private userWeight = [];
   public userWeight$ = new BehaviorSubject(this.userWeight);
@@ -31,7 +33,7 @@ export class UserService implements OnDestroy {
   public caloriesBurned$ = new BehaviorSubject(this.caloriesBurned);
 
   public caloriesLeft$ = combineLatest([
-    this.observable$,
+    this.user$,
     this.caloriesBurned$,
     this.caloriesConsumed$
   ]).pipe(
@@ -48,19 +50,27 @@ export class UserService implements OnDestroy {
     ).subscribe(userID => {
       this.getUserData(userID);
       this.getUserCalories(userID);
+      this.getUserCaloriesWeek(userID);
       this.getUserWeight(userID);
     });
   }
 
   public getUserData(userID) {
     this.http.get(`api/user/${userID}`).subscribe(userData => {
-      this.store = userData;
-      this.subject$.next(this.store);
+      this.user = userData;
+      this.user$.next(this.user);
     });
   }
 
   public getUserCalories(userID) {
-    this.http.get(`api/user/${userID}/calories`).pipe(
+    this.http.get(`api/user/${userID}/calories`).subscribe((userCalories: any) => {
+      this.allUserCalories = userCalories;
+      this.allUserCalories$.next(this.allUserCalories);
+    });
+  }
+
+  public getUserCaloriesWeek(userID) {
+    this.http.get(`api/user/${userID}/calories/week`).pipe(
       switchMap((userCalories: any) => {
         this.userCaloriesWeek = userCalories;
         this.userCaloriesWeek$.next(this.userCaloriesWeek);
@@ -71,7 +81,7 @@ export class UserService implements OnDestroy {
             date: formatDate(),
             calories_consumed: 0,
             calories_burned: 0,
-            calories_allowed: this.store.calories_allowed,
+            calories_allowed: this.user.calories_allowed,
           };
           return this.http.patch(`api/user/${userID}/calories`, todaysData);
         } else {
@@ -104,8 +114,8 @@ export class UserService implements OnDestroy {
   public saveUserData(userData: any) {
     return this.http.patch(`api/user/${userData.id}`, userData).pipe(
       tap(data => {
-        this.store = data;
-        this.subject$.next(this.store);
+        this.user = data;
+        this.user$.next(this.user);
       }),
     );
   }
@@ -114,7 +124,7 @@ export class UserService implements OnDestroy {
     const toSave = {
       date: formatDate(),
       calories_consumed: 0,
-      calories_allowed: this.store.calories_allowed,
+      calories_allowed: this.user.calories_allowed,
     };
     for (const foodItem of foodItems) {
       toSave.calories_consumed += foodItem.calories;
@@ -122,6 +132,8 @@ export class UserService implements OnDestroy {
     return this.userId$.pipe(
       switchMap(userID => this.http.patch(`api/user/${userID}/calories`, toSave)),
       tap((data: any) => {
+        this.allUserCalories[this.allUserCalories.length - 1] = data;
+        this.allUserCalories$.next(this.allUserCalories);
         this.userCaloriesWeek[6] = data;
         this.userCaloriesWeek$.next(this.userCaloriesWeek);
         this.caloriesConsumed = data.calories_consumed;
@@ -134,7 +146,7 @@ export class UserService implements OnDestroy {
     const toSave = {
       date: formatDate(),
       calories_burned: 0,
-      calories_allowed: this.store.calories_allowed,
+      calories_allowed: this.user.calories_allowed,
     };
     for (const exerciseItem of exerciseItems) {
       toSave.calories_burned += exerciseItem.calories;
@@ -142,6 +154,8 @@ export class UserService implements OnDestroy {
     return this.userId$.pipe(
       switchMap(userID => this.http.patch(`api/user/${userID}/calories`, toSave)),
       tap((data: any) => {
+        this.allUserCalories[this.allUserCalories.length - 1] = data;
+        this.allUserCalories$.next(this.allUserCalories);
         this.userCaloriesWeek[6] = data;
         this.userCaloriesWeek$.next(this.userCaloriesWeek);
         this.caloriesBurned = data.calories_burned;

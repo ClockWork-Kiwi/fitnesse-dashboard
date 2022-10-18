@@ -112,7 +112,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.userService.observable$.pipe(
+    this.userService.user$.pipe(
       takeUntil(this.componentDestruction$)
     ).subscribe(userData => {
       this.mainFormGroup.patchValue(userData);
