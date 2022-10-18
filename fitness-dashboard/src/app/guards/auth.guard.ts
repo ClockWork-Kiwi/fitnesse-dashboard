@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate {
 
   private routeToLogin() {
     this.snackBar.open(
-      'Not logged in or session timed out. Please log in',
+      'Not logged in or session timed out',
       'Dismiss',
       {duration: 10000, panelClass: 'snackbar-danger', verticalPosition: 'top', horizontalPosition: 'center'}
     );
