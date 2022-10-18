@@ -168,7 +168,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.dailyCalories$ = this.userService.allUserCalories$.pipe(
       takeUntil(this.componentDestruction$),
       map(data => {
-        console.log(data);
         if (!data || data.length === 0) { return []; }
         return data.map(row => {
           let dateString = new Date(row.date).toDateString();
@@ -177,13 +176,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
           let calorieString;
           let textClass;
           if (calorieDifference > 0) {
-            calorieString = calorieDifference + ' Under Target';
+            calorieString = calorieDifference + ' Under';
             textClass = 'text-secondary';
           } else if (calorieDifference === 0) {
-            calorieString = ' Target Exactly Met';
+            calorieString = ' Exactly Met';
             textClass = 'text-white';
           } else {
-            calorieString = (calorieDifference * -1) + ' Over Target';
+            calorieString = (calorieDifference * -1) + ' Over';
             textClass = 'text-danger';
           }
           return `<li class="ps-0 pe-3 py-1 d-flex ${textClass}">${dateString}<span class="ms-auto">${calorieString}</span></li>`;
