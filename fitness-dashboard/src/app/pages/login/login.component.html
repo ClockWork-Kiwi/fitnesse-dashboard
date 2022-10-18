@@ -11,7 +11,8 @@
       <field-text
         class="mx-auto col-4"
         label="Username"
-        [inputControl]="mainFormGroup | getControl: 'username'">
+        [inputControl]="mainFormGroup | getControl: 'username'"
+        (keydown.enter)="login()">
       </field-text>
     </div>
     <div class="row">
@@ -19,7 +20,8 @@
         class="mx-auto col-4"
         [password]="true"
         label="Password"
-        [inputControl]="mainFormGroup | getControl: 'password'">
+        [inputControl]="mainFormGroup | getControl: 'password'"
+        (keydown.enter)="login()">
       </field-text>
     </div>
     <div class="row">

@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {faCircleInfo, faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
-import {filter, map, switchMap, takeUntil} from 'rxjs/operators';
+import {filter, switchMap, takeUntil} from 'rxjs/operators';
 import {UserNutritionService} from '../../services/user-nutrition.service';
 import {UserService} from '../../services/user.service';
 import {FoodDataService} from '../../services/food-data.service';
@@ -19,7 +19,6 @@ export class NutritionComponent implements OnInit, OnDestroy {
 
   public addIcon = faPlusCircle;
   public removeIcon = faMinusCircle;
-  public infoIcon = faCircleInfo;
   private componentDestruction$ = new Subject();
 
   public searchingItem = false;

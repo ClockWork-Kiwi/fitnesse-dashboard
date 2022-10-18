@@ -59,7 +59,8 @@
           class="col-6"
           label="Diet Plan"
           [options]="dietPlanOptions"
-          [inputControl]="mainFormGroup | getControl: 'diet_plan'">
+          [inputControl]="mainFormGroup | getControl: 'diet_plan'"
+          (keydown.enter)="register()">
         </field-select>
       </div>
     </div>
