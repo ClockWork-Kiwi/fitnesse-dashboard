@@ -11,7 +11,14 @@
         <div class="row mt-2" *ngFor="let foodItem of foodItems; let i = index">
           <strong class="col-4 text-white">{{foodItem.food_name}}</strong>
           <strong class="col-2 text text-white">{{foodItem.servings}}</strong>
-          <strong class="col-4 text-white">{{foodItem.calories}}</strong>
+          <strong class="col-4 text-white">
+            <span
+              [matTooltip]="(foodItem.carbs > 0 || foodItem.fat > 0 || foodItem.protein > 0) ? foodItem.carbs + 'g carbs, ' + foodItem.fat + 'g fat, ' + foodItem.protein + 'g protein' : null"
+              matTooltipClass="text-secondary"
+              matTooltipPosition="after">
+                {{foodItem.calories}}
+            </span>
+          </strong>
           <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeFoodItem(foodItem.id)"></fa-icon>
         </div>
       </ng-container>

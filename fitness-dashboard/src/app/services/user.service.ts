@@ -6,6 +6,7 @@ import {formatDate} from '../functions/formatDate';
 import {Router} from '@angular/router';
 import {CookieService} from 'ngx-cookie-service';
 import {MatSnackBar} from '@angular/material';
+import {roundNumber} from '../functions/roundNumber';
 
 @Injectable({
   providedIn: 'root'
@@ -46,7 +47,7 @@ export class UserService implements OnDestroy {
     this.caloriesConsumed$
   ]).pipe(
     map(([userData, caloriesBurned, caloriesConsumed]) => {
-      return userData.calories_allowed + caloriesBurned - caloriesConsumed;
+      return roundNumber(userData.calories_allowed + caloriesBurned - caloriesConsumed);
     })
   );
 
