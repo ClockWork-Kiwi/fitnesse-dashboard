@@ -87,8 +87,10 @@
     </ng-container>
   </div>
   <div class="col-3">
-    <h2 class="text-secondary">My Diet Proportions</h2>
-    <canvas id="myDietChart"></canvas>
+    <ng-container *ngIf="showDietGraph">
+      <h2 class="text-secondary">My Diet Proportions</h2>
+      <canvas id="myDietChart"></canvas>
+    </ng-container>
       <h2 class="text-secondary mt-2" *ngIf="!!userDietPlan">{{userDietPlan}} Diet Ideal Proportions</h2>
       <canvas id="plannedDietChart"></canvas>
   </div>

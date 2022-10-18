@@ -2,7 +2,7 @@
   <mat-label>{{!!label ? label : ''}}</mat-label>
   <input
     matInput
-    type="text"
+    [type]="!password ? 'text' : 'password'"
     [formControl]="inputControl"
     [matAutocomplete]="auto"
     (blur)="blur.emit()">

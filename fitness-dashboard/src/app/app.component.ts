@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {Subject} from 'rxjs';
 import {filter, takeUntil} from 'rxjs/operators';
+import {UserService} from './services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public title = 'fitness-dashboard';
   private componentDestruction$ = new Subject();
   public activeRoute = '';
+  public loggedIn = false;
 
   public routes = [
     { label: 'Dashboard', route: 'dashboard' },
@@ -22,6 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
+    public userService: UserService,
   ) {}
 
   public navigateToRoute(route) {

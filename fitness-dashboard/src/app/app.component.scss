@@ -2,7 +2,14 @@
   border-bottom: #1a1a1a;
   border-bottom-style: solid;
   border-bottom-width: 0.2em;
+  display: flex;
+  cursor: default;
 }
+
+.log-out-button {
+  cursor: pointer;
+}
+
 .side-bar {
   background-image:  url(src/assets/menu-background.jpg);
 }
@@ -25,6 +32,7 @@
 }
 
 .route-item:hover {
+  cursor: pointer;
   background-color: rgba(194, 194, 194, 0.3);
   color: #98ffc2
 }

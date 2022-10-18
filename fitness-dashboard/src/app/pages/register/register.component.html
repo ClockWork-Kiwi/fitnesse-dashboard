@@ -1,0 +1,83 @@
+<div class="col-6 mx-auto d-flex" style="height: 100%">
+  <div class="my-auto pb-5" style="width: 100%;">
+    <div class="row">
+      <h1
+        class="col-4
+        text-center text-secondary mx-auto">
+        Fitnesse <img style="width: 2em" class="pb-1" src="assets/fitnesse-icon.png" alt="app-icon">
+      </h1>
+    </div>
+    <div class="row">
+      <div class="row">
+        <field-text
+          class="mx-auto col-12"
+          label="Username"
+          [inputControl]="mainFormGroup | getControl: 'username'">
+        </field-text>
+      </div>
+      <div class="row">
+        <field-text
+          class="mx-auto col-12"
+          [password]="true"
+          label="Password"
+          [inputControl]="mainFormGroup | getControl: 'password'">
+        </field-text>
+      </div>
+      <div class="row">
+        <field-select
+          class="col-6"
+          label="Sex"
+          [options]="sexOptions"
+          [inputControl]="mainFormGroup | getControl: 'sex'">
+        </field-select>
+        <field-number
+          class="col-6"
+          label="Age"
+          [inputControl]="mainFormGroup | getControl: 'age'">
+        </field-number>
+      </div>
+      <div class="row">
+        <field-number
+          class="col-6"
+          label="Height"
+          [inputControl]="mainFormGroup | getControl: 'height'">
+        </field-number>
+        <field-number
+          class="col-6"
+          label="Weight"
+          [inputControl]="mainFormGroup | getControl: 'weight'">
+        </field-number>
+      </div>
+      <div class="row">
+        <field-select
+          class="col-6"
+          label="Weight Goals"
+          [options]="weightGoalOptions"
+          [inputControl]="mainFormGroup | getControl: 'weight_goal'">
+        </field-select>
+        <field-select
+          class="col-6"
+          label="Diet Plan"
+          [options]="dietPlanOptions"
+          [inputControl]="mainFormGroup | getControl: 'diet_plan'">
+        </field-select>
+      </div>
+    </div>
+    <div class="row">
+      <button
+        (click)="register()"
+        mat-stroked-button
+        class="col-4 mx-auto bg-secondary text-primary border-secondary"
+      >Register
+      </button>
+    </div>
+    <div class="row">
+      <button
+        routerLink="/login"
+        mat-stroked-button
+        class="col-4 mx-auto mt-2 text-secondary border-secondary">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

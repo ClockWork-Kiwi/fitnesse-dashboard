@@ -14,6 +14,7 @@ export class TextComponent implements OnInit, OnDestroy {
   @Input() hint;
   @Input() label;
   @Input() options;
+  @Input() password = false;
 
   @Output('blur') blur = new EventEmitter();
 

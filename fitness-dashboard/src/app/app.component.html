@@ -1,19 +1,27 @@
 <div class="background" style="overflow: hidden">
-  <div class="col-12 title-bar px-2">
-    <h1 class="mb-0 text-secondary">Fitnesse</h1>
-  </div>
-  <mat-drawer-container class="app-container">
-    <mat-drawer class="col-2 side-bar" mode="side" opened>
-      <ng-container *ngFor="let route of routes">
-        <div class="col-12 p-2 text-white route-item" (click)="navigateToRoute(route.route)">
-          <h4 class="mb-0" [ngClass]="{'text-secondary': route.route === activeRoute}">{{route.label}}</h4>
+  <ng-container *ngIf="(userService.loggedIn$ | async); else loginScreen">
+    <div class="col-12 title-bar px-2">
+      <h1 class="mb-0 text-secondary">
+        Fitnesse <img style="width: 2em" class="pb-1" src="assets/fitnesse-icon.png" alt="app-icon">
+      </h1>
+      <strong class="ms-auto my-auto text-secondary log-out-button" (click)="userService.logout()">Log Out</strong>
+    </div>
+    <mat-drawer-container class="app-container">
+      <mat-drawer class="col-2 side-bar" mode="side" opened>
+        <ng-container *ngFor="let route of routes">
+          <div class="col-12 p-2 text-white route-item" (click)="navigateToRoute(route.route)">
+            <h4 class="mb-0" [ngClass]="{'text-secondary': route.route === activeRoute}">{{route.label}}</h4>
+          </div>
+        </ng-container>
+      </mat-drawer>
+      <mat-drawer-content class="col-10">
+        <div class="container-fluid" style="height: 100%">
+          <router-outlet></router-outlet>
         </div>
-      </ng-container>
-    </mat-drawer>
-    <mat-drawer-content class="col-10">
-      <div class="container-fluid" style="height: 100%">
-        <router-outlet></router-outlet>
-      </div>
-    </mat-drawer-content>
-  </mat-drawer-container>
+      </mat-drawer-content>
+    </mat-drawer-container>
+  </ng-container>
+<ng-template #loginScreen>
+  <router-outlet></router-outlet>
+</ng-template>
 </div>

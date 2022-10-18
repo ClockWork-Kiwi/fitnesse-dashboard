@@ -89,7 +89,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
               duration: 2000,
               horizontalPosition: 'center',
               verticalPosition: 'top',
-              panelClass: 'panel-success',
+              panelClass: 'snackbar-success',
             });
         }
       }),

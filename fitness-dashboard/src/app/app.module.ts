@@ -19,6 +19,9 @@ import { ExerciseComponent } from './pages/exercise/exercise.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {HttpClientModule} from '@angular/common/http';
 import { CountUpDirective } from './directives/count-up.directive';
+import { LoginComponent } from './pages/login/login.component';
+import {CookieService} from 'ngx-cookie-service';
+import { RegisterComponent } from './pages/register/register.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +31,8 @@ import { CountUpDirective } from './directives/count-up.directive';
     NutritionComponent,
     ExerciseComponent,
     CountUpDirective,
+    LoginComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,7 +54,7 @@ import { CountUpDirective } from './directives/count-up.directive';
     MatCardModule,
     MatProgressSpinnerModule,
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

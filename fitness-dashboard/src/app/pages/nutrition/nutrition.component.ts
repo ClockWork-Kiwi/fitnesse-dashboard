@@ -21,6 +21,7 @@ export class NutritionComponent implements OnInit, OnDestroy {
   private componentDestruction$ = new Subject();
 
   public searchingItem = false;
+  public showDietGraph = true;
   private foundItem;
 
   public userFoodItems$ = this.userNutritionService.observable$.pipe(
@@ -80,7 +81,10 @@ export class NutritionComponent implements OnInit, OnDestroy {
   }
 
   public initMyDietChart(foodItems) {
-    if (!foodItems || foodItems.length < 1) { return; }
+    this.showDietGraph = false;
+    if (!foodItems || foodItems.length < 1) {
+      return;
+    }
     let totalFat = 0;
     let totalCarbs = 0;
     let totalProtein = 0;
@@ -91,39 +95,42 @@ export class NutritionComponent implements OnInit, OnDestroy {
         totalProtein += item.protein;
       }
     }
-    if (totalFat > 0 || totalCarbs > 0 || totalProtein > 0) {
-      const totalNutrition = totalFat + totalCarbs + totalProtein;
-      const percentageFat = (totalFat / totalNutrition * 100).toFixed(2);
-      const percentageCarbs = (totalCarbs / totalNutrition * 100).toFixed(2);
-      const percentageProtein = (totalProtein / totalNutrition * 100).toFixed(2);
-      const context = document.getElementById('myDietChart');
-      const chartLabels = ['Fat', 'Carbs', 'Protein'];
-      const chartData = [{
-        data: [percentageFat, percentageCarbs, percentageProtein],
-        backgroundColor: ['rgba(255, 255, 0, 1)', 'rgba(150, 150, 255, 0.4)', 'rgba(255, 100, 100, 0.4)']
-      }];
-      const myDietChart = new Chart(context, {
-        type: 'doughnut',
-        data: {
-          labels: chartLabels,
-          datasets: chartData,
-        },
-        options: {
-          legend: {
-            labels: {
-              fontColor: 'white',
-              fontSize: 12,
-              padding: 30,
-            }
+    setTimeout(() => {
+      if (totalFat > 0 || totalCarbs > 0 || totalProtein > 0) {
+        this.showDietGraph = true;
+        const totalNutrition = totalFat + totalCarbs + totalProtein;
+        const percentageFat = (totalFat / totalNutrition * 100).toFixed(2);
+        const percentageCarbs = (totalCarbs / totalNutrition * 100).toFixed(2);
+        const percentageProtein = (totalProtein / totalNutrition * 100).toFixed(2);
+        const context = document.getElementById('myDietChart');
+        const chartLabels = ['Fat', 'Carbs', 'Protein'];
+        const chartData = [{
+          data: [percentageFat, percentageCarbs, percentageProtein],
+          backgroundColor: ['rgba(255, 255, 0, 1)', 'rgba(150, 150, 255, 0.4)', 'rgba(255, 100, 100, 0.4)']
+        }];
+        const myDietChart = new Chart(context, {
+          type: 'doughnut',
+          data: {
+            labels: chartLabels,
+            datasets: chartData,
           },
-          tooltips: {
-            callbacks: {
-              label: ctx => chartLabels[ctx.index] + ': ' + chartData[0].data[ctx.index] + '%'
-            }
+          options: {
+            legend: {
+              labels: {
+                fontColor: 'white',
+                fontSize: 12,
+                padding: 30,
+              }
+            },
+            tooltips: {
+              callbacks: {
+                label: ctx => chartLabels[ctx.index] + ': ' + chartData[0].data[ctx.index] + '%'
+              }
+            },
           },
-        },
-      });
-    }
+        });
+      }
+    }, 0);
   }
 
   public initMyPlanChart(fatPercentage, carbsPercentage, proteinPercentage) {
@@ -164,7 +171,7 @@ export class NutritionComponent implements OnInit, OnDestroy {
     this.userService.user$.pipe(
       takeUntil(this.componentDestruction$),
     ).subscribe(userData => {
-      if (!userData.diet_plan) { return ''; }
+      if (userData.diet_plan === null || userData.diet_plan === undefined) { return ''; }
       const dietPlanOptions = [
         { value: 0, label: 'Balanced' },
         { value: 1, label: 'Low Carb' },
