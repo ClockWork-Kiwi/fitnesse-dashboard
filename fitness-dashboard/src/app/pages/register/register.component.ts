@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {UserService} from '../../services/user.service';
 import {FitnessCalculatorService} from '../../services/fitness-calculator.service';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-register',
@@ -42,6 +43,7 @@ export class RegisterComponent implements OnInit {
   public mainFormGroup = this.fb.group({
     username: [null, Validators.required],
     password: [null, Validators.required],
+    confirmPassword: [null, Validators.required],
     sex: [null, Validators.required],
     age: [null, Validators.required],
     height: [null, Validators.required],
@@ -55,10 +57,21 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     private fitnessCalculatorService: FitnessCalculatorService,
+    private snackBar: MatSnackBar,
   ) { }
 
   public register() {
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
+    if (this.mainFormGroup.get('password').value !== this.mainFormGroup.get('confirmPassword').value) {
+      this.snackBar.open(
+        'Passwords must match',
+        'Dismiss',
+        {duration: 5000, panelClass: 'snackbar-danger', verticalPosition: 'top', horizontalPosition: 'center'}
+      );
+      this.mainFormGroup.get('confirmPassword').reset();
+      this.mainFormGroup.get('confirmPassword').markAsTouched();
+      return;
+    }
     this.calculateCalories(this.mainFormGroup.getRawValue());
     this.userService.register(this.mainFormGroup.getRawValue());
   }

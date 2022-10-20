@@ -2,7 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Chart} from 'chart.js';
 import {UserService} from '../../services/user.service';
 import {Subject} from 'rxjs';
-import {filter, map, takeUntil} from 'rxjs/operators';
+import {filter, map, takeUntil, tap} from 'rxjs/operators';
+import {faCircleInfo} from '@fortawesome/free-solid-svg-icons';
+import {roundNumber} from '../../functions/roundNumber';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +20,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private weightChart;
 
   public dailyCalories$;
+
+  public infoIcon = faCircleInfo;
 
   constructor(
     public userService: UserService,
@@ -47,10 +51,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       type: 'bar',
       data: {
         labels: data.map(e => {
-          if (!e.date) { return 'No Data'; }
+          if (!e.date) { return '-'; }
           return new Date(e.date).toDateString();
         }),
         datasets: [consumedData, burnedData],
+      },
+      tooltips: {
       },
       options: {
         responsive: true,
@@ -101,6 +107,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       },
       options: {
         legend: { display: false },
+        tooltips: {
+          callbacks: {
+            label: ctx => chartLabels[ctx.index] + ': ' + roundNumber(todaysData[0].data[ctx.index]) + '%'
+          }
+        },
       }
     });
   }
@@ -171,7 +182,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         return data.map(row => {
           let dateString = new Date(row.date).toDateString();
           if (dateString === new Date().toDateString()) { dateString = 'Today'; }
-          const calorieDifference = row.calories_allowed + row.calories_burned - row.calories_consumed;
+          const calorieDifference = roundNumber(row.calories_allowed + row.calories_burned - row.calories_consumed);
           let calorieString;
           let textClass;
           if (calorieDifference > 0) {
@@ -187,10 +198,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
           return `<li class="ps-0 pe-3 py-1 d-flex ${textClass}">${dateString}<span class="ms-auto">${calorieString}</span></li>`;
         });
       }),
+      tap(() => {
+        setTimeout(() => {
+          const nutritionView = document.getElementsByClassName('calorieList')[0];
+          nutritionView.scrollTop = nutritionView.scrollHeight;
+        }, 0);
+      })
     );
   }
 
   ngOnDestroy() {
+    if (!!this.weightChart) { this.weightChart.destroy(); }
+    if (!!this.weekChart) { this.weekChart.destroy(); }
+    if (!!this.todayChart) { this.todayChart.destroy(); }
     this.componentDestruction$.next();
   }
 

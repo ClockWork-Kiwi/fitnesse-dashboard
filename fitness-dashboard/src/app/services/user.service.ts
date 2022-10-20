@@ -1,7 +1,7 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {BehaviorSubject, combineLatest, EMPTY, Observable, of, Subject} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {filter, map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {catchError, filter, map, shareReplay, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {formatDate} from '../functions/formatDate';
 import {Router} from '@angular/router';
 import {CookieService} from 'ngx-cookie-service';
@@ -47,7 +47,12 @@ export class UserService implements OnDestroy {
     this.caloriesConsumed$
   ]).pipe(
     map(([userData, caloriesBurned, caloriesConsumed]) => {
-      return roundNumber(userData.calories_allowed + caloriesBurned - caloriesConsumed);
+      return {
+        allowed: roundNumber(userData.calories_allowed),
+        burned: roundNumber(caloriesBurned),
+        consumed: roundNumber(caloriesConsumed),
+        left: roundNumber(userData.calories_allowed + caloriesBurned - caloriesConsumed),
+      };
     })
   );
 
@@ -80,6 +85,7 @@ export class UserService implements OnDestroy {
           'Dismiss',
           {duration: 5000, panelClass: 'snackbar-danger', verticalPosition: 'top', horizontalPosition: 'center'}
         );
+        return;
       }
       this.token = response.token;
       this.userId = response.uid;
@@ -111,9 +117,23 @@ export class UserService implements OnDestroy {
 
   public register(newUser) {
     this.http.post(`api/register`, newUser).pipe(
+      catchError(err => {
+        this.snackBar.open(
+          'Username already taken',
+          'Dismiss',
+          {duration: 5000, panelClass: 'snackbar-danger', verticalPosition: 'top', horizontalPosition: 'center'}
+        );
+        return EMPTY;
+      }),
+      filter(userData => !!userData),
       switchMap((userData: any) => this.saveUserWeight(userData.id, userData.weight)),
     ).subscribe(response => {
-      this.router.navigateByUrl('login');
+      this.snackBar.open(
+        'Account Created!',
+        'Dismiss',
+        {duration: 5000, panelClass: 'snackbar-success', verticalPosition: 'top', horizontalPosition: 'center'}
+      );
+      this.login(newUser.username, newUser.password);
     });
   }
 

@@ -31,7 +31,7 @@ export class TextComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.filteredOptions$ =  this.inputControl.valueChanges.pipe(
+    this.filteredOptions$ = this.inputControl.valueChanges.pipe(
       takeUntil(this.componentDestruction$),
       startWith(''),
       map(value => this._filter(value || ''))

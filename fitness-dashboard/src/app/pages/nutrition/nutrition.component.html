@@ -1,28 +1,30 @@
 <div class="row">
   <div class="col-9">
     <h2 class="text-secondary">Today I had...</h2>
-    <ng-container *ngIf="(userFoodItems$ | async) as foodItems">
-      <ng-container *ngIf="!!foodItems && foodItems.length > 0">
-        <div class="row">
-          <strong class="col-4 text-secondary">Food</strong>
-          <strong class="col-2 text-secondary">Servings</strong>
-          <strong class="col-4 text-secondary">Calories</strong>
-        </div>
-        <div class="row mt-2" *ngFor="let foodItem of foodItems; let i = index">
-          <strong class="col-4 text-white">{{foodItem.food_name}}</strong>
-          <strong class="col-2 text text-white">{{foodItem.servings}}</strong>
-          <strong class="col-4 text-white">
-            <span
-              [matTooltip]="(foodItem.carbs > 0 || foodItem.fat > 0 || foodItem.protein > 0) ? foodItem.carbs + 'g carbs, ' + foodItem.fat + 'g fat, ' + foodItem.protein + 'g protein' : null"
-              matTooltipClass="text-secondary"
-              matTooltipPosition="after">
-                {{foodItem.calories}}
-            </span>
-          </strong>
-          <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeFoodItem(foodItem.id)"></fa-icon>
-        </div>
+    <div class="nutritionList">
+      <ng-container *ngIf="(userFoodItems$ | async) as foodItems">
+        <ng-container *ngIf="!!foodItems && foodItems.length > 0">
+          <div class="row">
+            <strong class="col-4 text-secondary">Food</strong>
+            <strong class="col-2 text-secondary">Servings</strong>
+            <strong class="col-4 text-secondary">Calories</strong>
+          </div>
+          <div class="row mt-2" *ngFor="let foodItem of foodItems; let i = index">
+            <strong class="col-4 text-white">{{foodItem.food_name}}</strong>
+            <strong class="col-2 text text-white">{{foodItem.servings}}</strong>
+            <strong class="col-4 text-white">
+              <span
+                [matTooltip]="(foodItem.carbs > 0 || foodItem.fat > 0 || foodItem.protein > 0) ? foodItem.carbs + 'g carbs, ' + foodItem.fat + 'g fat, ' + foodItem.protein + 'g protein' : null"
+                matTooltipClass="text-secondary"
+                matTooltipPosition="after">
+                  {{foodItem.calories}}
+              </span>
+            </strong>
+            <fa-icon class="col-2 text-secondary" [icon]="removeIcon" (click)="removeFoodItem(foodItem.id)"></fa-icon>
+          </div>
+        </ng-container>
       </ng-container>
-    </ng-container>
+    </div>
     <div class="row mt-5">
       <h5 class="text-secondary">New Food Item</h5>
       <field-text
@@ -87,8 +89,20 @@
     <ng-container *ngIf="(userService.caloriesLeft$ | async) as caloriesAllowed">
       <div class="row mt-2">
         <div class="col-8"></div>
-        <div class="col-4" [ngClass]="caloriesAllowed >=0 ? 'text-secondary' : 'text-danger'">
-          <strong [countUp]="caloriesAllowed >= 0 ? caloriesAllowed : caloriesAllowed * -1" [duration]="500"></strong><strong> {{ caloriesAllowed >= 0 ? 'Left for today!' : 'Over Allowance!'}}</strong>
+        <div class="col-4" [ngClass]="caloriesAllowed.left >=0 ? 'text-secondary' : 'text-danger'">
+          <strong
+            [countUp]="caloriesAllowed.left >= 0 ? caloriesAllowed.left : caloriesAllowed.left * -1" [duration]="500"></strong>
+          <strong>
+            {{ caloriesAllowed.left >= 0 ? 'Left for today!' : 'Over Allowance!'}}
+            <fa-icon
+              [icon]="infoIcon"
+              class="calorie-info"
+              style="font-size: 0.6em; margin-top: 0.1em"
+              [matTooltip]="caloriesAllowed.left >= 0 ? '= Allowed + Burned - Consumed' : 'Consumed - Allowed + Burned'"
+              matTooltipPosition="right"
+              matTooltipClass="text-secondary text-nowrap">
+            </fa-icon>
+          </strong>
         </div>
       </div>
     </ng-container>

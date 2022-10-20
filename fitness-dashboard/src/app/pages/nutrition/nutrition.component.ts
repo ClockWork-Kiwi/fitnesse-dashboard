@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faCircleInfo, faMinusCircle, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, Validators} from '@angular/forms';
 import {Subject} from 'rxjs';
-import {filter, switchMap, takeUntil} from 'rxjs/operators';
+import {debounceTime, filter, pairwise, switchMap, takeUntil} from 'rxjs/operators';
 import {UserNutritionService} from '../../services/user-nutrition.service';
 import {UserService} from '../../services/user.service';
 import {FoodDataService} from '../../services/food-data.service';
@@ -19,6 +19,7 @@ export class NutritionComponent implements OnInit, OnDestroy {
 
   public addIcon = faPlusCircle;
   public removeIcon = faMinusCircle;
+  public infoIcon = faCircleInfo;
   private componentDestruction$ = new Subject();
 
   public searchingItem = false;
@@ -70,6 +71,8 @@ export class NutritionComponent implements OnInit, OnDestroy {
     this.userNutritionService.saveNutritionItem(foodItem).pipe(
       switchMap(foodItems => this.userService.saveCaloriesConsumed(foodItems)),
     ).subscribe(() => {
+      const nutritionView = document.getElementsByClassName('nutritionList')[0];
+      nutritionView.scrollTop = nutritionView.scrollHeight;
       this.foundItem = undefined;
       this.mainFormGroup.reset({servings: 1});
       this.mainFormGroup.markAsPristine();
@@ -220,6 +223,17 @@ export class NutritionComponent implements OnInit, OnDestroy {
       this.mainFormGroup.get('fat').setValue(roundNumber(this.foundItem.fat * servings));
       this.mainFormGroup.get('carbs').setValue(roundNumber(this.foundItem.carbs * servings));
       this.mainFormGroup.get('protein').setValue(roundNumber(this.foundItem.protein * servings));
+    });
+
+    this.mainFormGroup.get('calories').valueChanges.pipe(
+      takeUntil(this.componentDestruction$),
+      filter(() => this.mainFormGroup.get('protein').pristine && this.mainFormGroup.get('carbs').pristine && this.mainFormGroup.get('fat').pristine && !!this.foundItem),
+      debounceTime(700),
+    ).subscribe(newValue => {
+      const ratio = newValue / this.foundItem.calories;
+      this.mainFormGroup.get('protein').setValue(roundNumber(this.foundItem.protein * ratio));
+      this.mainFormGroup.get('carbs').setValue(roundNumber(this.foundItem.carbs * ratio));
+      this.mainFormGroup.get('fat').setValue(roundNumber(this.foundItem.fat * ratio));
     });
   }
 

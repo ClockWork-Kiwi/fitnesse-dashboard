@@ -1,5 +1,5 @@
 <div class="row" style="height: 50%">
-  <div class="col-6" style="height: 100%">
+  <div class="col-6" id="weekDiv" style="height: 100%">
     <canvas id="thisWeekChart"></canvas>
   </div>
   <div class="col-6 d-flex" style="height: 100%">
@@ -17,8 +17,19 @@
       <canvas id="todayChart"></canvas>
     </div>
     <div class="text-center my-auto" *ngIf="(userService.caloriesLeft$ | async) as caloriesAllowed">
-      <strong [class]="caloriesAllowed >= 0 ? 'text-secondary' : 'text-danger'" style="font-size: 4em;" [countUp]="caloriesAllowed >= 0 ? caloriesAllowed : caloriesAllowed * -1" [duration]="500"></strong>
-      <p class="text-white mx-auto">{{caloriesAllowed >= 0 ? 'Calories Left Today' : 'Calories Over allowance'}}</p>
+      <strong [class]="caloriesAllowed.left >= 0 ? 'text-secondary' : 'text-danger'" style="font-size: 4em;" [countUp]="caloriesAllowed.left >= 0 ? caloriesAllowed.left : caloriesAllowed.left * -1" [duration]="500"></strong>
+      <p class="text-white mx-auto">
+        {{caloriesAllowed.left >= 0 ? 'Calories Left Today' : 'Calories Over allowance'}}
+        <fa-icon
+          [icon]="infoIcon"
+          class="calorie-info"
+          style="font-size: 0.6em;
+          margin-top: 0.1em"
+          [matTooltip]="caloriesAllowed.left >= 0 ? '= Allowed + Burned - Consumed' : 'Consumed - Allowed + Burned'"
+          matTooltipPosition="right"
+          matTooltipClass="text-secondary text-nowrap">
+        </fa-icon>
+      </p>
     </div>
   </div>
   <div class="col-6 d-flex">
