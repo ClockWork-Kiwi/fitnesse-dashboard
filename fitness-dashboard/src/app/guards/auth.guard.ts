@@ -16,24 +16,30 @@ export class AuthGuard implements CanActivate {
     private snackBar: MatSnackBar,
   ) {}
 
+  // Runs every time a user attempts to route to a non-login or register page
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    // Verify the current user
     return this.userService.verify().pipe(
+      // If the database returns an error, route back to login
       catchError(err => {
         this.routeToLogin();
         return EMPTY;
       }),
       map(verified => {
+        // If the current user isn't verified, route back to login
         if (!verified) {
           this.routeToLogin();
         }
+        // Return whether the user is verified. This determines whether the desired page 'can activate'
         return verified;
       })
     );
   }
 
+  // Function that routes the user back to the login screen, and displays an error message
   private routeToLogin() {
     this.snackBar.open(
       'Not logged in or session timed out',

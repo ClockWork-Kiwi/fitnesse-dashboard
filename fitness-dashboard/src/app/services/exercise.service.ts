@@ -10,23 +10,26 @@ import {formatDate} from '../functions/formatDate';
 })
 export class ExerciseService implements OnDestroy {
 
-  private destruction$ = new Subject();
+  private componentDestruction$ = new Subject();
+  // Local copy of the user's exercise items for the day
   private store = [];
+  // Private & public observables for sending updates on user exercise to any components listening to this observable
   private subject$ = new BehaviorSubject(this.store);
-  // In case we want the data transformed or filtered before returning
   public observable$ = this.subject$.pipe();
 
   constructor(
     private http: HttpClient,
     private userService: UserService,
   ) {
+    // When the service is initialised, wait for the user id to come in from the user service, and use it to retrieve the user's exercise items
     this.userService.userId$.pipe(
-      takeUntil(this.destruction$)
+      takeUntil(this.componentDestruction$)
     ).subscribe(userID => {
       this.getUserExercise(userID);
     });
   }
 
+  // Sends a GET request to the API to retrieve the given user's exercise data
   public getUserExercise(userID) {
     this.http.get(`api/exercise/${userID}`).subscribe((data: any[]) => {
       this.store = data;
@@ -34,6 +37,7 @@ export class ExerciseService implements OnDestroy {
     });
   }
 
+  // Sends a PATCH request to the API to create or update a given food item against the current user
   public saveExerciseItem(item: any) {
     item.date = formatDate();
     return this.userService.userId$.pipe(
@@ -47,6 +51,7 @@ export class ExerciseService implements OnDestroy {
     );
   }
 
+  // Sends a DELETE request to the API to remove the food item corresponding to the given foodItem ID
   public deleteExerciseItem(itemID: number) {
     return this.userService.userId$.pipe(
       filter(userID => !!userID),
@@ -64,6 +69,7 @@ export class ExerciseService implements OnDestroy {
 
 
   ngOnDestroy() {
-    this.destruction$.next();
+    // Destroy any ongoing subscriptions
+    this.componentDestruction$.next();
   }
 }

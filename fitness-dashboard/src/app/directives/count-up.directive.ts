@@ -11,6 +11,7 @@ const easeOutQuad = (x: number): number => x * (2 - x);
   selector: '[countUp]',
 })
 export class CountUpDirective implements OnInit, OnDestroy {
+  // Private variables
   private destroy$ = new Subject();
 
   private readonly count$ = new BehaviorSubject(0);

@@ -2,7 +2,7 @@
   <div class="col-9">
     <h2 class="text-secondary">Today I had...</h2>
     <div class="nutritionList">
-      <ng-container *ngIf="(userFoodItems$ | async) as foodItems">
+      <ng-container *ngIf="(userNutritionService.observable$ | async) as foodItems">
         <ng-container *ngIf="!!foodItems && foodItems.length > 0">
           <div class="row">
             <strong class="col-4 text-secondary">Food</strong>

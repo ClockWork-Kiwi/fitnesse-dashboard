@@ -13,10 +13,8 @@ import {MatSnackBar} from '@angular/material';
 })
 export class GoalsComponent implements OnInit, OnDestroy {
 
+  // Public & Private variables
   private componentDestruction$ = new Subject();
-
-  public caloriesAllowed;
-
   public sexOptions = [
     {value: 'male', label: 'Male'},
     {value: 'female', label: 'Female'},
@@ -46,6 +44,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
     { value: 4, label: 'Low Fat' },
   ];
 
+  // Form group for holding user data
   public mainFormGroup = this.fb.group({
     id: [null],
     sex: [null, Validators.required],
@@ -64,23 +63,32 @@ export class GoalsComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
   ) { }
 
+  // Function that calculates how many calories a user is allowed based on the information given
   public calculateCalories(formValue) {
+    // If any of the required fields are missing, mark all fields as touched (to show errors) and return
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
+    // Use the fitnessCalculatorService to calculate the user calories
     const calculatedCalories = this.fitnessCalculatorService.calculateCalories(
       formValue.sex,
       formValue.age,
       formValue.height,
       formValue.weight,
-      'sedentary',
+      'sedentary', // User activity is defaulted to 'sedentary', as user exercise is separately tracked in this app
     );
+    // Get the corresponding weight goal value to what the user chose from the map
     const goalString = this.weightGoalMap[formValue.weight_goal];
+    // Set the 'calories_allowed' value in the main form group to the value corresponding to the user's weight goal (rounded to a whole number)
     this.mainFormGroup.get('calories_allowed').setValue(Math.round(calculatedCalories[goalString] / 10) * 10, {emitEvent: false});
   }
 
+  // Function to save updated user values- runs when user clicks 'Save' button after changing user information
   public saveUserDetails() {
+    // Check form validity- return if not valid
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
+    // Send a save request to the API to update the user's information
     this.userService.saveUserData(this.mainFormGroup.getRawValue()).pipe(
       tap(data => {
+        // If the save is successful, show a success message
         if (!!data) {
           this.snackBar.open(
             'Saved Successfully!',
@@ -93,7 +101,9 @@ export class GoalsComponent implements OnInit, OnDestroy {
             });
         }
       }),
+      // Update today's calories_allowed with the user's updated allowed calories
       switchMap(() => this.userService.saveCaloriesAllowed(this.mainFormGroup.get('calories_allowed').value)),
+      // If the user's weight has changed, save the user's weight to the database
       switchMap(() => {
         if (this.mainFormGroup.get('weight').dirty) {
           return this.userService.saveUserWeight(this.mainFormGroup.get('id').value, this.mainFormGroup.get('weight').value);
@@ -106,6 +116,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // If any of the values in the main form group change, re-calculate the amount of calories the user is allowed
     this.mainFormGroup.valueChanges.pipe(
       takeUntil(this.componentDestruction$)
     ).subscribe(value => {
@@ -114,6 +125,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
       }
     });
 
+    // If the user's data is updated, update the main form group's values to match
     this.userService.user$.pipe(
       takeUntil(this.componentDestruction$)
     ).subscribe(userData => {
@@ -122,6 +134,7 @@ export class GoalsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    // Destroy any ongoing subscriptions
     this.componentDestruction$.next();
   }
 

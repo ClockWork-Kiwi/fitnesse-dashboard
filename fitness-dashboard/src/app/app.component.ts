@@ -10,11 +10,12 @@ import {UserService} from './services/user.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
+  // Private & Public variables
   public title = 'fitness-dashboard';
   private componentDestruction$ = new Subject();
   public activeRoute = '';
-  public loggedIn = false;
 
+  // Array that contains the navigation routes in the sidebar
   public routes = [
     { label: 'Dashboard', route: 'dashboard' },
     { label: 'My Info/Goals', route: 'goals' },
@@ -27,11 +28,13 @@ export class AppComponent implements OnInit, OnDestroy {
     public userService: UserService,
   ) {}
 
+  // Navigates the app to the desired route (run when a link in the sidebar is pressed)
   public navigateToRoute(route) {
     this.router.navigateByUrl(route);
   }
 
   ngOnInit() {
+    // Every time the user changes page, highlight the side menu item corresponding to the page they've routed to
     this.router.events.pipe(
       takeUntil(this.componentDestruction$),
       filter(event => event instanceof NavigationEnd),
@@ -41,6 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    // Terminate subscriptions
     this.componentDestruction$.next(true);
   }
 }

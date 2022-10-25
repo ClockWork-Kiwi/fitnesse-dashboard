@@ -5,6 +5,7 @@ import {combineLatest, Subject} from 'rxjs';
 import {map, switchMap, take, takeUntil, tap} from 'rxjs/operators';
 import {UserService} from '../../services/user.service';
 import {ExerciseService} from '../../services/exercise.service';
+import {roundNumber} from '../../functions/roundNumber';
 
 @Component({
   selector: 'app-exercise',
@@ -13,14 +14,16 @@ import {ExerciseService} from '../../services/exercise.service';
 })
 export class ExerciseComponent implements OnInit, OnDestroy {
 
+  // Public & Private variables
   public addIcon = faPlusCircle;
   public removeIcon = faMinusCircle;
   public exerciseOptions = [];
-  // Hard coded value- it must be replaced by value from database later
+  // Private observable that emits the user's current weight when user data becomes available
   private userWeight$ = this.userService.user$.pipe(
     map(userData => userData.weight)
   );
 
+  // Hard-coded Kaggle exercise information array
   public exerciseData = [
     '"Cycling, mountain bike, bmx",1.75072971940299',
     '"Cycling, <10 mph, leisure bicycling",0.823235629850746',
@@ -212,6 +215,7 @@ export class ExerciseComponent implements OnInit, OnDestroy {
   ];
   private componentDestruction$ = new Subject();
 
+  // Form group that holds user entered values to be saved to the database
   public mainFormGroup = this.fb.group({
     exercise_name: [null, Validators.required],
     duration: [null],
@@ -224,24 +228,35 @@ export class ExerciseComponent implements OnInit, OnDestroy {
     public exerciseService: ExerciseService,
   ) { }
 
+  // Function that runs when the user clicks the + icon after entering an exercise name/duration & calories
   public addExerciseItem() {
+    // If any of the required fields in the main form group are missing, 'touch' the fields to show that they're required, and return
     if (!this.mainFormGroup.valid) { this.mainFormGroup.markAllAsTouched(); return; }
+    // Get the data entered in the main form group's fields
     const exerciseItem = this.mainFormGroup.getRawValue();
-    this.mainFormGroup.get('exercise_name').reset();
-    this.mainFormGroup.get('duration').reset();
-    this.mainFormGroup.get('calories').reset();
+    // Send a save request to the API for the new exercise item
     this.exerciseService.saveExerciseItem(exerciseItem).pipe(
+      // Once the item has been saved, use the updated exercise items array to recalculate the user's burned calories for the day
       switchMap(exerciseItems => this.userService.saveCaloriesBurned(exerciseItems)),
-    ).subscribe(() => {});
+    ).subscribe(() => {
+      // Reset the 'new item' fields
+      this.mainFormGroup.get('exercise_name').reset();
+      this.mainFormGroup.get('duration').reset();
+      this.mainFormGroup.get('calories').reset();
+    });
   }
 
+  // Function that runs when the user clicks the - icon next to an exercise item
   public removeExerciseItem(itemID) {
+    // Send a delete request to the database for the given item
     this.exerciseService.deleteExerciseItem(itemID).pipe(
+      // Once the item has been deleted, use the update exercise items array to recalculate the user's burned calories for the day
       switchMap(exerciseItems => this.userService.saveCaloriesBurned(exerciseItems)),
     ).subscribe();
   }
 
   ngOnInit() {
+    // When the page is loaded, format the Kaggle exercise dataset to a format that this component can use
     this.exerciseData.forEach(exercise => {
       const splitExerciseData = exercise.split('"');
       const formattedExercise = {
@@ -251,6 +266,7 @@ export class ExerciseComponent implements OnInit, OnDestroy {
       this.exerciseOptions.push(formattedExercise);
     });
 
+    // Subscription that runs whenever the user changes the exercise, its duration, or whenever the user's weight changes
     combineLatest([
       this.mainFormGroup.get('exercise_name').valueChanges,
       this.mainFormGroup.get('duration').valueChanges,
@@ -258,22 +274,30 @@ export class ExerciseComponent implements OnInit, OnDestroy {
     ]).pipe(
       takeUntil(this.componentDestruction$),
     ).subscribe(([exercise, duration, userWeight]) => {
+      // If any of the fields required to calculate calories is missing, return
       if (!exercise || !userWeight || !duration || duration < 0) { return; }
+      // Try to find the user entered exercise in the hard-coded list of exercises
       const foundExercise = this.exerciseOptions.find(e => e.value.toLowerCase().includes(exercise.toLowerCase()));
+      // If an exercise is found
       if (!!foundExercise) {
-        // Still not sure about this, the dataset just seems to be wrong/inconsistent with itself.
-        // It says units are measured in calories burned/per kg/per hour, but when calculated it seems that
-        // The numbers are closer to calories burned/per lb/per half hour. Might be missing something, but I don't think I am
+        // Calculate the calories burned
+        // NOTE: Still not sure about this, the dataset just seems to be wrong/inconsistent with itself.
+        // The documentation (https://www.kaggle.com/datasets/a5ee8b9d770e65ca566f73016e860e693b7d966a8fa0f24137942a380ce4fc84?resource=download) says units are measured in calories burned per kg/per hour, but when calculated it seems that
+        // The numbers are closer to calories burned per lb/per half hour.
+        // In any case, I believe the results of these calories provide a fairly accurate ballpark.
         let caloriesBurned = foundExercise.caloriesPerLbPerHalfHour * (userWeight * 2.2) * (duration / 30);
-        caloriesBurned = Math.round(caloriesBurned / 10) * 10;
+        // Round the calories burned to 2dp
+        caloriesBurned = roundNumber(caloriesBurned);
+        // Set the calories field to the number calculated
         this.mainFormGroup.get('calories').setValue(caloriesBurned);
-      } else {
+      } else { // If no matching exercise is found, reset the calories field (since the user is entering a new exercise)
         this.mainFormGroup.get('calories').reset();
       }
     });
   }
 
   ngOnDestroy() {
+    // Destroy any ongoing subscriptions
     this.componentDestruction$.next();
   }
 

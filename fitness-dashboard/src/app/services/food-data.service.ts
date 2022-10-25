@@ -11,6 +11,8 @@ export class FoodDataService {
     private http: HttpClient,
   ) {}
 
+  // Function that takes a string containing a food name, and sends it to Edamam to be searched in their database.
+  // If a result is found then the first suggestion is returned in a format the nutrition screen can use
   public getFoodData(foodName) {
     let params = new HttpParams();
     params = params.append('app_id', 'f92465c5');
